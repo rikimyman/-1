@@ -1,0 +1,552 @@
+/* Base container styles */
+.crypto-cards-container {
+    max-width: 100%;
+    padding: 16px;
+}
+
+/* Card grid container with consistent spacing */
+#crypto-cards-container {
+    display: grid;
+    gap: 16px; /* Consistent gap between cards */
+    width: 100%;
+    transition: all 0.3s ease;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Dynamic columns */
+}
+
+/* Base card styles - square aspect ratio */
+.crypto-card {
+    background-color: var(--card-bg, #ffffff);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    aspect-ratio: 1 / 1; /* Square aspect ratio */
+}
+
+body.dark-theme .crypto-card {
+    background-color: #1c1c1c;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.crypto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+/* Add a pulsing border effect on hover */
+/* Add a slow, light grey pulsing border effect on hover */
+.crypto-card:hover {
+    animation: pulse-border-light 2s infinite; /* Slow pulse animation */
+    transform: translateY(-4px); /* Keep the existing hover effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Define the light grey pulsing border animation */
+@keyframes pulse-border-light {
+    0% {
+        border-color: rgba(200, 200, 200, 0.5); /* Light grey */
+        box-shadow: 0 0 10px rgba(200, 200, 200, 0.5);
+    }
+    50% {
+        border-color: rgba(200, 200, 200, 1); /* Brighter grey */
+        box-shadow: 0 0 20px rgba(200, 200, 200, 0.8);
+    }
+    100% {
+        border-color: rgba(200, 200, 200, 0.5); /* Light grey */
+        box-shadow: 0 0 10px rgba(200, 200, 200, 0.5);
+    }
+}
+
+/* Dark theme pulsing border */
+body.dark-theme .crypto-card:hover {
+    animation: pulse-border-dark-light 2s infinite; /* Slow pulse animation for dark theme */
+}
+
+/* Define the pulsing border animation for dark theme */
+@keyframes pulse-border-dark-light {
+    0% {
+        border-color: rgba(100, 100, 100, 0.5); /* Darker grey */
+        box-shadow: 0 0 10px rgba(100, 100, 100, 0.5);
+    }
+    50% {
+        border-color: rgba(100, 100, 100, 1); /* Brighter grey */
+        box-shadow: 0 0 20px rgba(100, 100, 100, 0.8);
+    }
+    100% {
+        border-color: rgba(100, 100, 100, 0.5); /* Darker grey */
+        box-shadow: 0 0 10px rgba(100, 100, 100, 0.5);
+    }
+}
+
+/* Card content scaling for square cards */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.coin-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.coin-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.coin-logo img {
+    width: 100%;
+    height: auto;
+}
+
+.coin-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color, #333);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+body.dark-theme .coin-name {
+    color: #f5f5f5;
+}
+
+.coin-symbol {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-weight: 500;
+    color: var(--secondary-text, #777);
+    background-color: var(--secondary-bg, #f0f0f0);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+body.dark-theme .coin-symbol {
+    background-color: #333;
+    color: #aaa;
+}
+
+.price-container {
+    margin: 8px 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.coin-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+body.dark-theme .coin-price {
+    color: #f5f5f5;
+}
+
+.price-change {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.price-up {
+    color: #4daf7c;
+    background-color: rgba(77, 175, 124, 0.1);
+}
+
+.price-down {
+    color: #e63946;
+    background-color: rgba(230, 57, 70, 0.1);
+}
+
+.pulse-up {
+    animation: pulse-green 0.5s;
+}
+
+.pulse-down {
+    animation: pulse-red 0.5s;
+}
+
+/* Improved market data display - centered with separator */
+.market-data {
+    display: flex;
+    justify-content: center; /* Center the content */
+    font-size: 0.8rem;
+    margin: 8px 0 12px;
+    color: var(--secondary-text, #777);
+    position: relative;
+    text-align: center; /* Center text */
+}
+
+body.dark-theme .market-data {
+    color: #aaa;
+}
+
+/* Center separator approach */
+.market-cap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    padding-right: 16px; /* More space for separator */
+    text-align: right; /* Align text to the right */
+    align-items: flex-end; /* Align elements to the right */
+}
+
+/* The actual centered separator line */
+.market-cap:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70%; /* Same height as the text */
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme separator */
+body.dark-theme .market-cap:after {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.volume {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    padding-left: 16px; /* More space for separator */
+    text-align: left; /* Align text to the left */
+    align-items: flex-start; /* Align elements to the left */
+}
+
+.data-label {
+    font-size: 0.65rem;
+    opacity: 0.8;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data-value {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Improved chart container positioning */
+.chart-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    margin-top: 0; /* Changed from auto to fixed value */
+    margin-bottom: 8px; /* Added bottom margin */
+    flex-grow: 1;
+    height: 40%; /* Increased from 30% for better visibility */
+    min-height: 80px; /* Set minimum height for visibility */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-area {
+    height: 100% !important;
+    width: 100% !important;
+    display: block !important; /* Ensure display */
+}
+
+/* Responsive grid adjustments - clean implementation */
+@media (min-width: 1600px) {
+    #crypto-cards-container {
+        grid-template-columns: repeat(4, 1fr); /* 5 cards per row on very large screens */
+    }
+    
+    .chart-container {
+        height: 35%; /* Larger chart for bigger screens */
+        min-height: 62px;
+    }
+    .coin-price {
+        font-size: 1.1rem;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+    #crypto-cards-container {
+        grid-template-columns: repeat(3, 1fr); /* 4 cards per row on larger screens */
+    }
+    
+    .chart-container {
+        height: 55%;
+        min-height: 140px;
+    }
+    .coin-price {
+        font-size: 1.3rem;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    #crypto-cards-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 cards per row on medium screens */
+    }
+    
+    .coin-name {
+        font-size: 1rem;
+    }
+    
+    .market-data {
+        font-size: 0.75rem;
+        margin-bottom: 10px; /* Increased space before chart */
+    }
+    
+    .chart-container {
+        min-height: 80px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 991px) {
+    #crypto-cards-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 cards per row on smaller desktops */
+    }
+    
+    .coin-name {
+        font-size: 0.95rem;
+    }
+    
+    .coin-price {
+        font-size: 1.3rem;
+    }
+    
+    .market-data {
+        font-size: 0.7rem;
+        margin-bottom: 10px;
+    }
+    
+    .chart-container {
+        min-height: 70px;
+    }
+}
+
+/* Exactly 2 cards per row at 768px and below */
+@media (max-width: 768px) {
+    #crypto-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px; /* Smaller gap for smaller screens */
+    }
+    
+    .crypto-card {
+        padding: 12px;
+    }
+    
+    .coin-logo {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .coin-name {
+        font-size: 0.9rem;
+    }
+    
+    .coin-price {
+        font-size: 0.9rem;
+    }
+    
+    .price-change {
+        font-size: 0.6rem;
+        padding: 1px 4px;
+    }
+    
+    .market-data {
+        font-size: 0.65rem;
+        margin-bottom: 8px;
+        flex-direction: row; /* Force horizontal layout */
+        gap: 8px;
+    }
+    
+    .chart-container {
+        min-height: 60px;
+        height: 30%;
+    }
+}
+
+/* Even smaller screens */
+@media (max-width: 480px) {
+    #crypto-cards-container {
+        grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
+        gap: 10px;
+        margin: 0 auto; /* Center container */
+    }
+    
+    .crypto-card {
+        padding: 10px;
+        aspect-ratio: auto; /* Remove fixed aspect ratio for better responsiveness */
+        min-height: 150px; /* Set min-height instead */
+        margin: 0; /* Remove any margin that might cause overlapping */
+        width: 100%; /* Full width of grid cell */
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
+    
+    .chart-container {
+        min-height: 40px;
+        height: 40px; /* Fixed height instead of percentage */
+        margin-top: 5px;
+        flex-grow: 0; /* Don't allow to grow */
+    }
+    
+    .market-data {
+        font-size: 0.6rem;
+        gap: 6px;
+        margin-bottom: 6px;
+        flex-direction: row;
+        flex-wrap: nowrap; /* Prevent wrapping */
+        justify-content: space-between; /* Maximum separation between items */
+    }
+    
+    /* Improve spacing of elements */
+    .coin-info {
+        gap: 4px; /* Reduce gap */
+    }
+    
+    .price-container {
+        margin: 5px 0; /* Reduce margin */
+    }
+}
+
+/* Very small screens - maintain 2 column layout but reduce padding */
+@media (max-width: 380px) {
+    #crypto-cards-container {
+        gap: 8px; /* Even smaller gap for tiny screens */
+        padding: 0 2px; /* Minimal padding */
+    }
+    
+    .crypto-card {
+        padding: 8px;
+        min-height: 130px; /* Smaller minimum height */
+        overflow: visible; /* Prevent content from being cut off */
+    }
+    
+    .coin-name {
+        font-size: 0.8rem;
+    }
+    
+    .coin-symbol {
+        font-size: 0.7rem;
+        padding: 1px 4px; /* Smaller padding */
+    }
+    
+    .coin-price {
+        font-size: 0.8rem;
+        margin-right: 4px; /* Reduce margin */
+    }
+    
+    .price-change {
+        font-size: 0.6rem;
+        padding: 0px 3px; /* Smaller padding */
+    }
+    
+    .market-data {
+        font-size: 0.55rem;
+        gap: 4px;
+        margin: 4px 0; /* Reduce margin top and bottom */
+    }
+    
+    .chart-container {
+        min-height: 30px; /* Slightly taller than smallest screens */
+        height: 30px;
+        margin-top: 4px;
+    }
+}
+
+/* Extra small screens - collapse to single column if needed */
+@media (max-width: 300px) {
+    #crypto-cards-container {
+        grid-template-columns: 1fr; /* Single column layout */
+    }
+    
+    .crypto-card {
+        max-width: 100%;
+        min-height: 120px; /* Even smaller */
+    }
+    
+    .chart-container {
+        height: 25px;
+        min-height: 25px;
+    }
+}
+
+/* Animation styles */
+.price-up {
+    color: #4daf7c;
+    background-color: rgba(77, 175, 124, 0.1);
+}
+
+.price-down {
+    color: #e63946;
+    background-color: rgba(230, 57, 70, 0.1);
+}
+
+.pulse-up {
+    animation: pulse-green 0.5s;
+}
+
+.pulse-down {
+    animation: pulse-red 0.5s;
+}
+
+@keyframes pulse-green {
+    0% { color: inherit; }
+    50% { 
+        color: #4daf7c; 
+        text-shadow: 0 0 10px rgba(77, 175, 124, 0.5);
+        transform: scale(1.05);
+    }
+    100% { 
+        color: inherit;
+        text-shadow: none;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse-red {
+    0% { color: inherit; }
+    50% { 
+        color: #e63946; 
+        text-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+        transform: scale(1.05);
+    }
+    100% { 
+        color: inherit;
+        text-shadow: none;
+        transform: scale(1);
+    }
+}
+
+/* Loading placeholders */
+.crypto-card.loading .coin-price,
+.crypto-card.loading .price-change,
+.crypto-card.loading .data-value {
+    background-color: var(--placeholder-bg, #eee);
+    color: transparent;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite;
+}

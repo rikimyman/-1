@@ -1,0 +1,770 @@
+/* Base styling */
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header Styles */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 35px;
+  width: auto;
+  margin-right: 12px;
+}
+
+.site-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f1f1;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  margin-right: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: #e5e5e5;
+}
+
+.light-icon, .dark-icon {
+  width: 20px;
+  height: 20px;
+  color: #555;
+}
+
+.light-icon {
+  display: none;
+}
+
+/* Hamburger menu */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active .hamburger-line:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Button styling */
+.BTC, .ETH, .efud, .bfud, .btc {
+  border-radius: 12px;
+  background-color: white;
+  width: 220px;
+  padding: 14px 20px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 8px 6px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.BTC:hover, .ETH:hover, .efud:hover, .bfud:hover, .btc:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Fear & Greed Index Button */
+.fear-greed {
+  width: 220px;
+  height: auto;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background-color: white;
+  cursor: pointer;
+  display: inline-block;
+  margin: 8px 6px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.fear-greed:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Gauge styling */
+.gauge-container {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.gauge {
+  position: relative;
+  height: 8px;
+  background: linear-gradient(to right, 
+    #e63946 0%, 
+    #e8793e 25%, 
+    #f7c02a 50%, 
+    #9ac53b 75%, 
+    #4daf7c 100%
+  );
+  border-radius: 4px;
+  margin-top: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.gauge-marker {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border: 2px solid #333;
+  border-radius: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%; /* Default position, will be updated by JS */
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.gauge-label {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+}
+
+/* Fear & Greed sentiment classes */
+.extreme-fear .gauge-label {
+  color: #e63946;
+}
+
+.fear .gauge-label {
+  color: #e8793e;
+}
+
+.neutral .gauge-label {
+  color: #f7c02a;
+}
+
+.greed .gauge-label {
+  color: #9ac53b;
+}
+
+.extreme-greed .gauge-label {
+  color: #4daf7c;
+}
+
+/* Data display within buttons */
+#funding-rate,
+#eth-funding-rate,
+#total-market-cap,
+#total-volume,
+#btc-dominance {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  color: #bab194;
+}
+
+/* Button layout container */
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Dark theme */
+body.dark-theme {
+  background-color: #141414;
+  color: #e9ecef;
+}
+
+body.dark-theme .site-header {
+  background-color: #141414;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-theme .site-title {
+  color: #e9ecef;
+}
+
+body.dark-theme .hamburger-line {
+  background-color: #e9ecef;
+}
+
+body.dark-theme .theme-toggle {
+  background-color: #3a4055;
+}
+
+body.dark-theme .light-icon {
+  display: inline;
+  color: #e9ecef;
+}
+
+body.dark-theme .dark-icon {
+  display: none;
+}
+
+body.dark-theme .BTC,
+body.dark-theme .ETH,
+body.dark-theme .efud,
+body.dark-theme .bfud,
+body.dark-theme .btc {
+  background-color: #141414;
+  color: #e9ecef;
+  border-color: #333333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-theme #funding-rate,
+body.dark-theme #eth-funding-rate,
+body.dark-theme #total-market-cap,
+body.dark-theme #total-volume,
+body.dark-theme #btc-dominance {
+  color: #bab194;
+}
+
+body.dark-theme .fear-greed {
+  background-color: #141414;
+  color: #e9ecef;
+  border-color: #333333;
+}
+
+body.dark-theme .gauge-marker {
+  background-color: #e9ecef;
+  border-color: #555;
+}
+
+body.dark-theme .gauge-label {
+  color: #e9ecef;
+}
+
+body.dark-theme .price-range-panel {
+  background-color: 171817;
+  color: #e9ecef;
+  border-color: #3c3d37;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Price Range Panel */
+.price-range-panel {
+  width: 310px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background-color: white;
+  color: #333;
+  margin: 8px 6px;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.panel-title {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #d0caca;
+}
+
+.price-slider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.range-label {
+  font-size: 12px;
+  color: #adb5bd;
+  white-space: nowrap;
+}
+
+.range-low {
+  margin-right: 8px;
+}
+
+.range-high {
+  margin-left: 8px;
+}
+
+.slider-bar {
+  flex-grow: 1;
+  height: 4px;
+  background: linear-gradient(to right, #978100, #978100, #978100);
+  position: relative;
+  border-radius: 2px;
+}
+
+.slider-knob {
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.current-price {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin: 20px 0;
+  color: #4daf7c;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.price-up {
+  color: #4daf7c;
+}
+
+.price-down {
+  color: #e63946;
+}
+
+.chart-container {
+  height: 50px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* Price indicators */
+.price-indicator {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.price-up-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid #4daf7c;
+  display: inline-block;
+}
+
+.price-down-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid #e63946;
+  display: inline-block;
+}
+
+/* Market Overview Section */
+.market-overview-container {
+  background-color: #141414;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.market-overview-header {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.market-overview-header::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  bottom: -8px;
+}
+
+.market-icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.market-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.market-icon .material-icons {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+}
+
+.market-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1px;
+}
+
+.market-controls-container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.left-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 40px; /* Increased from 30px to 40px for even more space */
+}
+
+.search-container {
+  position: relative;
+  width: 200px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+}
+
+.market-search {
+  width: 100%;
+  padding: 8px 10px 8px 35px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+}
+
+.market-search::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.market-search:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: 20px; /* Increased from 15px to 20px */
+}
+
+.filter-btn {
+  padding: 6px 12px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.right-controls {
+  display: flex;
+  align-items: center;
+}
+
+.time-toggles {
+  display: flex;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-toggle {
+  padding: 6px 12px;
+  background-color: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.time-toggle:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-toggle.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Light theme overrides for market overview */
+body:not(.dark-theme) .market-overview-container {
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+body:not(.dark-theme) .market-overview-header::after {
+  background: #e0e0e0;
+}
+
+body:not(.dark-theme) .market-icon {
+  background-color: #f1f1f1;
+}
+
+body:not(.dark-theme) .market-icon .material-icons {
+  color: #555;
+}
+
+body:not(.dark-theme) .market-title {
+  color: #555;
+}
+
+body:not(.dark-theme) .search-icon {
+  color: #777;
+}
+
+body:not(.dark-theme) .market-search {
+  border: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+body:not(.dark-theme) .market-search::placeholder {
+  color: #aaa;
+}
+
+body:not(.dark-theme) .filter-btn {
+  border: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  color: #555;
+}
+
+body:not(.dark-theme) .filter-btn:hover {
+  background-color: #e9e9e9;
+}
+
+body:not(.dark-theme) .time-toggles {
+  border: 1px solid #e0e0e0;
+}
+
+body:not(.dark-theme) .time-toggle {
+  color: #777;
+}
+
+body:not(.dark-theme) .time-toggle:not(:last-child) {
+  border-right: 1px solid #e0e0e0;
+}
+
+body:not(.dark-theme) .time-toggle.active {
+  background-color: #e9e9e9;
+  color: #333;
+}
+
+/* Market Overview Section - Updated styling */
+.market-overview-section {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto 40px;
+  padding: 0;
+}
+
+.market-overview-section.no-border {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+body.dark-theme .market-overview-section.no-border {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.market-overview-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 15px 0;
+  margin-bottom: 5px;
+}
+
+.market-overview-header::after {
+  content: '';
+  position: absolute;
+  width: 90%;
+  height: 1px;
+  background: rgba(128, 128, 128, 0.2);
+  bottom: 0;
+}
+
+/* ...existing market icon styles... */
+
+.market-controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  flex-wrap: wrap;
+}
+
+/* ...existing left-controls and right-controls styles... */
+
+/* Responsive design updates */
+@media screen and (max-width: 768px) {
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .BTC, .ETH {
+    display: block;
+    width: 90%;
+    max-width: 300px;
+    margin: 8px auto;
+  }
+  
+  .bfud, .efud, .btc, .price-range-panel { /*I added day range remove and appear 768*/
+    display: none;
+  }
+
+  .fear-greed {
+    display: block;
+    width: 90%;
+    max-width: 300px;
+    margin: 8px auto;
+  }
+
+  .price-range-panel {
+    width: 90%;
+    max-width: 340px;
+    margin: 15px auto;
+  }
+
+  .market-controls-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .left-controls {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column; /* Stack elements vertically on mobile */
+    align-items: center;
+    gap: 25px; /* Increased from 20px to 25px */
+  }
+  
+  .search-container {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .filter-buttons {
+    margin-left: 0; /* Remove margin on mobile */
+    justify-content: center;
+    margin-top: 15px; /* Increased from 10px to 15px */
+  }
+  
+  .right-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .market-overview-section {
+    width: 90%;
+    margin: 20px auto;
+  }
+}

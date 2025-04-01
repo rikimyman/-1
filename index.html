@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="crypto-cards.css">
+<script>
+  // Enhanced resize observer for chart responsiveness
+  document.addEventListener('DOMContentLoaded', function() {
+    // Function to properly resize all charts
+    function resizeAllCharts() {
+      document.querySelectorAll('.chart-area').forEach(canvas => {
+        if (canvas.chart) {
+          const container = canvas.closest('.chart-container');
+          if (container) {
+            // Make canvas fill container while maintaining proper scaling
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            
+            // Apply higher resolution rendering
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+            
+            // Ensure minimum dimensions for visibility
+            canvas.width = Math.max(rect.width * dpr, 100);
+            canvas.height = Math.max(rect.height * dpr, 50);
+            
+            // Update chart with proper scaling
+            if (canvas.chart.options) {
+              canvas.chart.options.responsive = true;
+              canvas.chart.options.maintainAspectRatio = false;
+              
+              // Ensure chart shows data properly
+              if (canvas.chart.options.scales && canvas.chart.options.scales.y) {
+                const data = canvas.chart.data.datasets[0].data;
+                if (data && data.length) {
+                  const min = Math.min(...data);
+                  const max = Math.max(...data);
+                  const padding = (max - min) * 0.1;
+                  canvas.chart.options.scales.y.min = min - padding;
+                  canvas.chart.options.scales.y.max = max + padding;
+                }
+              }
+            }
+            
+            // Force redraw
+            canvas.chart.resize();
+            canvas.chart.update('quiet');
+          }
+        }
+      });
+    }
+    
+    // Set up resize observer with debouncing
+    const resizeObserver = new ResizeObserver(entries => {
+      if (window.resizeTimer) clearTimeout(window.resizeTimer);
+      window.resizeTimer = setTimeout(resizeAllCharts, 100);
+    });
+    
+    // Observe both container and cards
+    const container = document.getElementById('crypto-cards-container');
+    if (container) {
+      resizeObserver.observe(container);
+      
+      // Observe individual cards for more precise updates
+      document.querySelectorAll('.crypto-card').forEach(card => {
+        resizeObserver.observe(card);
+      });
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      if (window.windowResizeTimer) clearTimeout(window.windowResizeTimer);
+      window.windowResizeTimer = setTimeout(resizeAllCharts, 200);
+    });
+    
+    // Initial resize with multiple attempts to ensure charts render
+    setTimeout(resizeAllCharts, 100);
+    setTimeout(resizeAllCharts, 500);
+    setTimeout(resizeAllCharts, 1000);
+  });
+</script>
