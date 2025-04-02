@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zenus - Crypto AI Assistant</title>
     <!-- Add these scripts to the head section of your HTML -->
     <script src="coins-data.js"></script>
@@ -56,7 +57,7 @@
 
         /* Sidebar styles */
         .sidebar {
-            width: 300px;
+            width: 240px;
             background-color: var(--sidebar-bg);
             color: var(--text-color);
             display: flex;
@@ -69,6 +70,74 @@
         }
 
         
+  /* Add styles for the sidebar toggle button for larger screens */
+  .sidebar-toggle-large {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 15;
+    background-color: transparent !important; /* Force transparent background */
+    border: none !important; /* Force no border */
+    border-radius: 0; /* Remove border radius */
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: none !important; /* Force no shadow */
+    align-items: center;
+    justify-content: center;
+}
+/* Make sidebar toggle icon match theme color */
+.sidebar-toggle-large svg {
+    stroke: var(--text-color); /* Use the text color variable which changes with theme */
+    stroke-width: 2.5; /* Make the stroke a bit bolder for better visibility */
+}
+
+/* Hover effect for clickability feedback */
+.sidebar-toggle-large:hover {
+    transform: translateY(-2px);
+    background-color: transparent !important; /* Keep background transparent on hover */
+}
+
+.sidebar-toggle-large:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.dark-mode .sidebar-toggle-large:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+/* Add transition to the sidebar-toggle-large */
+.sidebar-toggle-large {
+    transition: left 0.3s ease; /* Match the sidebar transition */
+}
+
+/* Create a shifted position for when sidebar is shown */
+body:not(.sidebar-hidden) .sidebar-toggle-large {
+    left: 260px; /* 240px width of sidebar + 20px original left margin */
+}
+
+/* Show sidebar toggle on larger screens */
+@media (min-width: 769px) {
+    .sidebar-toggle-large {
+        display: flex;
+    }
+    
+    /* Hide the mobile menu toggle button on larger screens */
+    .menu-toggle {
+        display: none;
+    }
+    
+    /* Add class for when sidebar is hidden */
+    body.sidebar-hidden .sidebar {
+        margin-left: -240px; /* Hide the sidebar by pushing it off-screen */
+    }
+    
+    body.sidebar-hidden .chat-container {
+        margin-left: 0; /* Remove the margin when sidebar is hidden */
+    }
+}     
 /* Add this style to move the history items down - only on mobile */
 .history {
     flex: 1;
@@ -260,28 +329,45 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
         }
 
-        .user-section {
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            margin-top: auto;
-        }
+       /* Update user section styling for dark/light mode */
+.user-section {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    background-color: var(--bg-color); /* Match background with theme */
+    transition: var(--transition); /* Smooth transition when theme changes */
+}
 
-        .user-section .user-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #EBF8FF;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 14px;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 2px 6px rgba(66, 153, 225, 0.2);
-        }
+/* Update user icon to use an image instead of text */
+.user-section .user-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    overflow: hidden; /* Keep the image within the circle */
+    background-color: var(--bg-color); /* Use theme background */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.user-section .user-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure image covers the circle properly */
+}
+
+/* Adjust user info for dark mode */
+.dark-mode .user-info .user-name {
+    color: var(--text-color); /* Use theme text color */
+}
+
+.dark-mode .user-info .user-status {
+    color: var(--text-light); /* Use theme light text color */
+}
 
         .user-info {
             flex: 1;
@@ -988,7 +1074,7 @@
 
 /* Add this to your existing CSS */
 .theme-toggle {
-    background: transparent;
+    background: transparent !important; ;
     border: none;
     cursor: pointer;
     display: flex;
@@ -1002,7 +1088,7 @@
 }
 
 .theme-toggle:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: transparent;
     transform: scale(1.1);
 }
 
@@ -1057,11 +1143,11 @@
         top: 20px;
         right: 20px;
         z-index: 15;
-        background-color: var(--bg-color);
-        border: 1px solid var(--border-color);
+        background-color: transparent;
+        border: none !important;
         width: 40px;
         height: 40px;
-        box-shadow: var(--card-shadow);
+        box-shadow: none !important;
     }
     
     /* Remove from sidebar when it's in the corner */
@@ -1071,16 +1157,197 @@
 }
 
 /* Hide theme toggle on mobile */
-@media (max-width: 768px) {
-    .theme-toggle {
+
+/* Remove the standalone theme toggle that appears outside the sidebar */
+@media (min-width: 769px), (max-width: 768px) {
+    /* Hide the standalone theme toggle in all media queries */
+    .theme-toggle:not(.user-section .theme-toggle) {
         display: none;
     }
-    
-    /* Keep it visible in the sidebar on mobile */
-    .user-section .theme-toggle {
-        display: flex;
+}
+
+/* Style the theme toggle inside the user section */
+.user-section .theme-toggle {
+    display: flex;
+    position: static; /* Override the fixed positioning */
+    margin-left: auto; /* Push it to the right of the user info */
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Make sure it's displayed in the user section */
+.user-section {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+}
+
+/* Update user section styling for dark/light mode */
+.user-section {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    background-color: var(--bg-color); /* Match background with theme */
+    transition: var(--transition); /* Smooth transition when theme changes */
+}
+
+/* Update user icon to use an image instead of text */
+.user-section .user-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    overflow: hidden; /* Keep the image within the circle */
+    background-color: var(--bg-color); /* Use theme background */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.user-section .user-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure image covers the circle properly */
+}
+
+/* Adjust user info for dark mode */
+.dark-mode .user-info .user-name {
+    color: var(--text-color); /* Use theme text color */
+}
+
+.dark-mode .user-info .user-status {
+    color: var(--text-light); /* Use theme light text color */
+}
+/* Style the home button - place it next to the conversation title */
+.home-button {
+   /* Position it to the left of the conversation title */
+    z-index: 10;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--text-color);
+    transition: var(--transition);
+}
+
+.home-button svg {
+    stroke: var(--text-color);
+    stroke-width: 1.2;
+}
+
+.home-button:hover {
+    transform: translateY(-2px);
+}
+
+/* Show the home button only when sidebar is hidden */
+body.sidebar-hidden .home-button {
+    display: flex;
+}
+
+@media (max-width: 768px) {
+    .home-button {
+        top: 10px;
+        left: 60px; /* Position it next to the menu toggle */
     }
 }
+/* Ensure mobile viewport constraints with !important */
+@media (max-width: 768px) {
+    /* Fix input area stretching */
+    .input-area {
+        padding: 16px 15px 20px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Fix input container width */
+    .input-container {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+    }
+    
+    /* Fix message padding */
+    .message {
+        padding: 20px 15px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Ensure message content doesn't overflow */
+    .message-content {
+        max-width: 100% !important;
+        overflow-wrap: break-word !important;
+        word-wrap: break-word !important;
+    }
+    
+    /* Fix crypto data cards */
+    .crypto-data,
+    .market-data {
+        padding: 18px 15px !important;
+        width: auto !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Fix crypto details grid */
+    .crypto-details, 
+    .market-details {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    
+    /* Fix crypto detail cards */
+    .crypto-detail {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        padding: 14px !important;
+    }
+    
+    /* Fix disclaimer text */
+    .disclaimer {
+        width: 100% !important;
+        padding: 0 5px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Force body to full width */
+    body {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Ensure main container doesn't overflow */
+    .chat-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Ensure chat messages area doesn't overflow */
+    .chat-messages {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+}
+
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -1143,22 +1410,38 @@
                 <span>Understanding DeFi</span>
             </div>
         </div>
-        <div class="user-section">
-            <div class="user-icon">U</div>
-            <div class="user-info">
-                <div class="user-name">User</div>
-                <div class="user-status">Personal Account</div>
-            </div>
-        </div>
-        <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="moon-icon">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="sun-icon">
-                <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-        </button>
+        <!-- Update the user-section div like this -->
+<!-- Update the user-section div to use an image -->
+<div class="user-section">
+    <div class="user-icon">
+        <img src="user.png" alt="User" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 120 120\'><rect width=\'120\' height=\'120\' rx=\'60\' fill=\'%23EBF8FF\'/><text x=\'50%\' y=\'50%\' font-family=\'Arial\' font-size=\'60\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\' fill=\'%233182CE\'>U</text></svg>'">
+    </div>
+    <div class="user-info">
+        <div class="user-name">Jimmy</div>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="moon-icon">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="sun-icon">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    </button>
+    <button class="home-button" id="home-button" title="Return to welcome screen">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 22V12h6v10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>
+        <!-- Add this right after the theme-toggle button -->
+<button class="sidebar-toggle-large" id="sidebar-toggle-large" title="Toggle sidebar">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="9" y1="3" x2="9" y2="21"></line>
+    </svg>
+</button>
     </div>
     
 
@@ -1192,8 +1475,10 @@
                 </div>
             </div>
         </div>
+        
         <!-- Messages will be added here by JavaScript -->
     </div>
+    
 
     <div class="input-area">
         <div class="input-container">
@@ -1211,6 +1496,32 @@
 </div>
 
     <script>
+
+        // Add this to your existing DOMContentLoaded event handler
+        const homeButton = document.getElementById('home-button');
+
+        homeButton.addEventListener('click', function() {
+            window.location.href = 'riki.html';
+        });
+        
+
+        // Add this to your existing DOMContentLoaded event handler
+const sidebarToggleLarge = document.getElementById('sidebar-toggle-large');
+
+// Check if sidebar was previously hidden
+const sidebarHidden = localStorage.getItem('sidebar-hidden') === 'true';
+if (sidebarHidden) {
+    document.body.classList.add('sidebar-hidden');
+}
+
+// Handle sidebar toggle click
+sidebarToggleLarge.addEventListener('click', function() {
+    // Toggle sidebar-hidden class on body
+    document.body.classList.toggle('sidebar-hidden');
+    
+    // Save preference in localStorage
+    localStorage.setItem('sidebar-hidden', document.body.classList.contains('sidebar-hidden'));
+});
 
         // Add this to your existing DOMContentLoaded event handler
 const themeToggle = document.getElementById('theme-toggle');
