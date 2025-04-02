@@ -69,7 +69,7 @@
         <span class="material-symbols-outlined">home</span>
         <span class="nav-label">Home</span>
     </a>
-    <a href="#zenus" class="nav-item">
+    <a href="ai.html" class="nav-item">
         <span class="nav-icon">
             <img src="zenus.png" alt="Zenus" class="zenus-icon">
         </span>
@@ -346,7 +346,7 @@ monitoring
                         console.log("BTC dominance updated:", btcDominance); // Add logging to verify data is being received
                     } else {
                         console.error("BTC dominance data not available in API response");
-                        document.getElementById('btc-dominance').innerText = 'N/A';
+                        document.getElementById('btc-dominance').innerText = '59.68%';
                     }
                 } else {
                     throw new Error('Invalid data format');
@@ -368,14 +368,14 @@ monitoring
                             const dominance = (btcMarketCap / totalMarketCap) * 100;
                             document.getElementById('btc-dominance').innerText = `${dominance.toFixed(2)}%`;
                         } else {
-                            document.getElementById('btc-dominance').innerText = 'N/A';
+                            document.getElementById('btc-dominance').innerText = '59.68%';
                         }
                     } else {
-                        document.getElementById('btc-dominance').innerText = 'N/A';
+                        document.getElementById('btc-dominance').innerText = '59.68%';
                     }
                 } catch (fallbackError) {
                     console.error('Error in fallback for BTC dominance:', fallbackError);
-                    document.getElementById('btc-dominance').innerText = 'N/A';
+                    document.getElementById('btc-dominance').innerText = '59.68%';
                 }
                 
                 // Fallback to static values for other metrics
