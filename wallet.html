@@ -1,657 +1,433 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallet - Platone</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Platone | Crypto Portfolio Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Add Chart.js for portfolio distribution -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <!-- Side Navigation for Screens > 991px -->
-    <nav class="side-navigation">
-        <ul class="side-nav-items">
-            <li class="side-nav-item">
-                <a href="riki.html">
-                    <span class="nav-icon material-symbols-outlined">home</span>
-                    <span class="nav-label">Home</span>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="#zenus">
-                    <span class="nav-icon">
-                        <img src="zenus.png" alt="Zenus" style="width: 22px; height: 22px;">
-                    </span>
-                    <span class="nav-label">Zenus AI</span>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="#charts">
-                    <span class="nav-icon material-symbols-outlined">monitoring</span>
-                    <span class="nav-label">Charts</span>
-                </a>
-            </li>
-            <li class="side-nav-item active">
-                <a href="wallet.html">
-                    <span class="nav-icon material-symbols-outlined">wallet</span>
-                    <span class="nav-label">Wallet</span>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="#profile">
-                    <span class="nav-icon material-symbols-outlined">person</span>
-                    <span class="nav-label">Profile</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Bottom Navigation for Screens ≤ 990px -->
-    <nav class="bottom-navigation">
-        <a href="riki.html" class="nav-item">
-            <span class="material-symbols-outlined">home</span>
-        </a>
-        <a href="#zenus" class="nav-item">
-            <span class="nav-icon">
-                <img src="zenus.png" alt="Zenus" class="zenus-icon">
-            </span>
-        </a>
-        <a href="#charts" class="nav-item">
-            <span class="material-symbols-outlined">monitoring</span>
-        </a>
-        <a href="wallet.html" class="nav-item active">
-            <span class="material-symbols-outlined">wallet</span>
-        </a>
-        <a href="#profile" class="nav-item">
-            <span class="material-symbols-outlined">person</span>
-        </a>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="wallet-container">
-            <h1 class="page-title">Portfolio Tracker</h1>
-            <p class="subtitle">Add your holdings manually to track your portfolio</p>
-            
-            <div class="add-asset-form">
-                <div class="form-row">
-                    <div class="search-container">
-                        <input type="text" id="coin-search" placeholder="Search for any cryptocurrency..." class="coin-input">
-                        <div id="search-results" class="search-results">
-                            <!-- Search results will appear here -->
-                        </div>
-                    </div>
-                    <input type="number" id="coin-amount" placeholder="Amount" class="amount-input" step="any">
-                    <button id="add-coin" class="add-button" disabled>Add Coin</button>
-                </div>
-                <div class="form-hint">Search for any cryptocurrency and enter the amount you own</div>
-            </div>
-            
-            <div id="portfolio-summary" class="portfolio-summary">
-                <div class="summary-card">
-                    <div class="summary-header">
-                        <h2>Portfolio Overview</h2>
-                        <span class="last-updated">Last updated: <span id="update-time">Just now</span></span>
-                    </div>
-                    <div class="total-value">
-                        <span class="value-label">Total Value:</span>
-                        <span id="total-value" class="value-amount">$0.00</span>
-                    </div>
-                    <div class="value-change">
-                        <span class="change-label">24h Change:</span>
-                        <span id="daily-change" class="change-amount">+0.00%</span>
-                    </div>
-                </div>
-                
-                <div class="assets-container">
-                    <div class="assets-header">
-                        <h2>Your Assets</h2>
-                        <button id="clear-all" class="clear-button">Clear All</button>
-                    </div>
-                    <div class="assets-list" id="assets-list">
-                        <!-- Asset items will be added here dynamically -->
-                        <div class="empty-list" id="empty-list">
-                            <span class="material-symbols-outlined">add_circle</span>
-                            <p>Add your first coin above to start tracking</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chart-container">
-                    <h2>Portfolio Distribution</h2>
-                    <div id="chart-area" class="chart-area">
-                        <canvas id="portfolio-chart"></canvas>
-                        <div class="chart-placeholder" id="chart-placeholder">
-                            <span class="material-symbols-outlined">pie_chart</span>
-                            <p>Chart will appear when you add coins</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="disclaimer">
-                <p><strong>Note:</strong> Your portfolio data is saved locally in your browser and is not sent to any server. Price data is retrieved from CoinGecko API.</p>
-            </div>
-        </div>
-
-        <!-- Loading overlay -->
-        <div id="loading-overlay" class="loading-overlay">
-            <div class="spinner"></div>
-            <p>Loading data...</p>
-        </div>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check for saved theme preference
-            const savedDarkMode = localStorage.getItem('darkMode');
-            if (savedDarkMode === 'true') {
-                document.body.classList.add('dark-theme');
-            }
-            
-            // Initialize variables
-            let portfolio = JSON.parse(localStorage.getItem('portfolio')) || [];
-            let totalValue = 0;
-            let totalChange = 0;
-            let searchTimeout;
-            let selectedCoin = null;
-            let portfolioChart = null;
-            
-            // Elements
-            const coinSearchInput = document.getElementById('coin-search');
-            const searchResults = document.getElementById('search-results');
-            const addCoinBtn = document.getElementById('add-coin');
-            const coinAmountInput = document.getElementById('coin-amount');
-            const assetsList = document.getElementById('assets-list');
-            const emptyList = document.getElementById('empty-list');
-            const totalValueElement = document.getElementById('total-value');
-            const dailyChangeElement = document.getElementById('daily-change');
-            const updateTimeElement = document.getElementById('update-time');
-            const clearAllBtn = document.getElementById('clear-all');
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const chartPlaceholder = document.getElementById('chart-placeholder');
-            
-            // Update UI when page loads
-            updatePortfolioUI();
-            
-            // Search input event
-            coinSearchInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                
-                // Clear previous timeout
-                if (searchTimeout) {
-                    clearTimeout(searchTimeout);
-                }
-                
-                // Reset selected coin
-                selectedCoin = null;
-                addCoinBtn.disabled = true;
-                
-                // Clear results if query is empty
-                if (query === '') {
-                    searchResults.innerHTML = '';
-                    searchResults.style.display = 'none';
-                    return;
-                }
-                
-                // Set timeout to avoid too many API calls
-                searchTimeout = setTimeout(() => {
-                    searchCoin(query);
-                }, 500);
-            });
-            
-            // Hide search results when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!coinSearchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                    searchResults.style.display = 'none';
-                }
-            });
-            
-            // Add coin button event
-            addCoinBtn.addEventListener('click', function() {
-                const amount = parseFloat(coinAmountInput.value);
-                
-                if (selectedCoin && amount > 0) {
-                    // Show loading overlay
-                    loadingOverlay.classList.add('active');
-                    
-                    // Fetch current price for the selected coin
-                    fetchCoinPrice(selectedCoin.id, amount);
-                } else {
-                    alert('Please select a coin and enter a valid amount');
-                }
-            });
-            
-            // Clear all button event
-            clearAllBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to clear your entire portfolio?')) {
-                    portfolio = [];
-                    localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                    updatePortfolioUI();
-                }
-            });
-            
-            // Function to search for coins
-            async function searchCoin(query) {
-                try {
-                    const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
-                    const data = await response.json();
-                    
-                    // Display results
-                    displaySearchResults(data.coins.slice(0, 8)); // Limit to 8 results
-                } catch (error) {
-                    console.error('Error searching for coins:', error);
-                    searchResults.innerHTML = '<div class="search-error">Error searching for coins. Try again later.</div>';
-                    searchResults.style.display = 'block';
-                }
-            }
-            
-            // Function to display search results
-            function displaySearchResults(coins) {
-                if (coins.length === 0) {
-                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
-                    searchResults.style.display = 'block';
-                    return;
-                }
-                
-                // Clear previous results
-                searchResults.innerHTML = '';
-                
-                // Add each result
-                coins.forEach(coin => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'search-result-item';
-                    resultItem.innerHTML = `
-                        <img src="${coin.thumb}" alt="${coin.name}" class="coin-thumb">
-                        <div class="coin-info">
-                            <div class="coin-name">${coin.name}</div>
-                            <div class="coin-symbol">${coin.symbol.toUpperCase()}</div>
-                        </div>
-                    `;
-                    
-                    // Add click event
-                    resultItem.addEventListener('click', function() {
-                        selectedCoin = coin;
-                        coinSearchInput.value = `${coin.name} (${coin.symbol.toUpperCase()})`;
-                        searchResults.style.display = 'none';
-                        addCoinBtn.disabled = false;
-                    });
-                    
-                    searchResults.appendChild(resultItem);
-                });
-                
-                searchResults.style.display = 'block';
-            }
-            
-            // Function to fetch coin price and add to portfolio
-            async function fetchCoinPrice(coinId, amount) {
-                try {
-                    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`);
-                    const data = await response.json();
-                    
-                    const price = data.market_data.current_price.usd;
-                    const change24h = data.market_data.price_change_percentage_24h || 0;
-                    const value = price * amount;
-                    const icon = data.image.thumb;
-                    
-                    // Create asset object
-                    const asset = {
-                        id: data.id,
-                        name: data.name,
-                        symbol: data.symbol.toUpperCase(),
-                        amount: amount,
-                        price: price,
-                        value: value,
-                        change: change24h,
-                        icon: icon
-                    };
-                    
-                    // Check if coin already exists in portfolio
-                    const existingIndex = portfolio.findIndex(item => item.id === asset.id);
-                    
-                    if (existingIndex >= 0) {
-                        // Update existing coin
-                        portfolio[existingIndex].amount += amount;
-                        portfolio[existingIndex].value = portfolio[existingIndex].amount * price;
-                    } else {
-                        // Add new coin
-                        portfolio.push(asset);
-                    }
-                    
-                    // Save and update UI
-                    localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                    
-                    // Clear inputs
-                    coinSearchInput.value = '';
-                    coinAmountInput.value = '';
-                    selectedCoin = null;
-                    addCoinBtn.disabled = true;
-                    
-                    // Update UI
-                    updatePortfolioUI();
-                    
-                    // Hide loading overlay
-                    loadingOverlay.classList.remove('active');
-                } catch (error) {
-                    console.error('Error fetching coin price:', error);
-                    alert('Error fetching coin price. Please try again later.');
-                    
-                    // Hide loading overlay
-                    loadingOverlay.classList.remove('active');
-                }
-            }
-            
-            // Function to refresh portfolio prices
-            async function refreshPortfolioPrices() {
-                if (portfolio.length === 0) return;
-                
-                // Show loading overlay
-                loadingOverlay.classList.add('active');
-                
-                try {
-                    // Get all coin IDs in portfolio
-                    const coinIds = portfolio.map(asset => asset.id).join(',');
-                    
-                    // Fetch current prices for all coins
-                    const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinIds}&price_change_percentage=24h`);
-                    const data = await response.json();
-                    
-                    // Update portfolio with new prices
-                    portfolio = portfolio.map(asset => {
-                        const coinData = data.find(coin => coin.id === asset.id);
-                        if (coinData) {
-                            return {
-                                ...asset,
-                                price: coinData.current_price,
-                                value: asset.amount * coinData.current_price,
-                                change: coinData.price_change_percentage_24h || 0
-                            };
-                        }
-                        return asset;
-                    });
-                    
-                    // Save and update UI
-                    localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                    updatePortfolioUI();
-                } catch (error) {
-                    console.error('Error refreshing portfolio prices:', error);
-                } finally {
-                    // Hide loading overlay
-                    loadingOverlay.classList.remove('active');
-                }
-            }
-            
-            // Update portfolio UI
-            function updatePortfolioUI() {
-                // Clear current list
-                assetsList.innerHTML = '';
-                
-                if (portfolio.length === 0) {
-                    emptyList.style.display = 'flex';
-                    totalValueElement.textContent = '$0.00';
-                    dailyChangeElement.textContent = '+0.00%';
-                    dailyChangeElement.className = 'change-amount';
-                    
-                    // Hide chart, show placeholder
-                    chartPlaceholder.style.display = 'flex';
-                    if (portfolioChart) {
-                        portfolioChart.destroy();
-                        portfolioChart = null;
-                    }
-                    return;
-                }
-                
-                emptyList.style.display = 'none';
-                
-                // Calculate totals
-                totalValue = 0;
-                let weightedChange = 0;
-                
-                portfolio.forEach(asset => {
-                    totalValue += asset.value;
-                    weightedChange += (asset.change * asset.value);
-                });
-                
-                // Calculate weighted average change
-                totalChange = weightedChange / totalValue;
-                
-                // Update summary values
-                totalValueElement.textContent = formatCurrency(totalValue);
-                dailyChangeElement.textContent = formatPercentage(totalChange);
-                dailyChangeElement.className = totalChange >= 0 ? 'change-amount positive-change' : 'change-amount negative-change';
-                updateTimeElement.textContent = new Date().toLocaleTimeString();
-                
-                // Sort portfolio by value (highest first)
-                portfolio.sort((a, b) => b.value - a.value);
-                
-                // Add each asset to the list
-                portfolio.forEach(asset => {
-                    const assetItem = document.createElement('div');
-                    assetItem.className = 'asset-item';
-                    
-                    const changeClass = asset.change >= 0 ? 'positive-change' : 'negative-change';
-                    
-                    assetItem.innerHTML = `
-                        <div class="asset-icon">
-                            <img src="${asset.icon}" alt="${asset.symbol}">
-                        </div>
-                        <div class="asset-details">
-                            <div class="asset-name">${asset.name} <span class="asset-symbol">${asset.symbol}</span></div>
-                            <div class="asset-amount">${formatNumber(asset.amount)} ${asset.symbol}</div>
-                        </div>
-                        <div class="asset-value">
-                            <div class="value">${formatCurrency(asset.value)}</div>
-                            <div class="change ${changeClass}">${formatPercentage(asset.change)}</div>
-                        </div>
-                        <button class="remove-asset" data-id="${asset.id}">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
-                    `;
-                    
-                    assetsList.appendChild(assetItem);
-                });
-                
-                // Add event listeners for remove buttons
-                document.querySelectorAll('.remove-asset').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        removeAsset(id);
-                    });
-                });
-                
-                // Update portfolio chart
-                updatePortfolioChart();
-            }
-            
-            // Function to update portfolio chart
-            function updatePortfolioChart() {
-                if (portfolio.length === 0) return;
-                
-                // Hide placeholder
-                chartPlaceholder.style.display = 'none';
-                
-                // Prepare data for chart
-                const labels = portfolio.map(asset => asset.symbol);
-                const data = portfolio.map(asset => asset.value);
-                const backgroundColor = generateChartColors(portfolio.length);
-                
-                // Create or update chart
-                if (portfolioChart) {
-                    portfolioChart.data.labels = labels;
-                    portfolioChart.data.datasets[0].data = data;
-                    portfolioChart.data.datasets[0].backgroundColor = backgroundColor;
-                    portfolioChart.update();
-                } else {
-                    const ctx = document.getElementById('portfolio-chart').getContext('2d');
-                    portfolioChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                data: data,
-                                backgroundColor: backgroundColor,
-                                borderWidth: 2,
-                                borderColor: document.body.classList.contains('dark-theme') ? '#242424' : '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        color: document.body.classList.contains('dark-theme') ? '#f5f5f5' : '#333',
-                                        padding: 15,
-                                        usePointStyle: true,
-                                        pointStyle: 'circle'
-                                    }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            const value = context.raw;
-                                            const total = context.chart.getDatasetMeta(0).total;
-                                            const percentage = Math.round((value / total) * 100);
-                                            return `${context.label}: ${formatCurrency(value)} (${percentage}%)`;
-                                        }
-                                    }
-                                }
-                            },
-                            cutout: '70%'
-                        }
-                    });
-                }
-            }
-            
-            // Function to generate chart colors
-            function generateChartColors(count) {
-                const baseColors = [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
-                    '#FF9F40', '#8AC249', '#EA5545', '#F46A9B', '#EF9B20'
-                ];
-                
-                // If we need more colors than in our base array, generate them
-                if (count <= baseColors.length) {
-                    return baseColors.slice(0, count);
-                }
-                
-                // Generate additional colors
-                const colors = [...baseColors];
-                for (let i = baseColors.length; i < count; i++) {
-                    const hue = (i * 137.5) % 360; // Use golden ratio to spread colors
-                    colors.push(`hsl(${hue}, 70%, 60%)`);
-                }
-                
-                return colors;
-            }
-            
-            // Remove an asset from portfolio
-            function removeAsset(id) {
-                portfolio = portfolio.filter(asset => asset.id !== id);
-                localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                updatePortfolioUI();
-            }
-            
-            // Helper functions for formatting
-            function formatCurrency(value) {
-                return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-            }
-            
-            function formatPercentage(value) {
-                return (value >= 0 ? '+' : '') + value.toFixed(2) + '%';
-            }
-            
-            function formatNumber(num) {
-                if (num >= 1000000) {
-                    return (num / 1000000).toFixed(2) + 'M';
-                } else if (num >= 1000) {
-                    return (num / 1000).toFixed(2) + 'K';
-                } else if (num < 0.001) {
-                    return num.toExponential(4);
-                } else {
-                    return num.toString();
-                }
-            }
-            
-            // Add refresh button to summary card
-            const summaryHeader = document.querySelector('.summary-header');
-            const refreshButton = document.createElement('button');
-            refreshButton.className = 'refresh-button';
-            refreshButton.innerHTML = '<span class="material-symbols-outlined">refresh</span>';
-            refreshButton.title = 'Refresh prices';
-            refreshButton.addEventListener('click', refreshPortfolioPrices);
-            summaryHeader.appendChild(refreshButton);
-            
-            // Auto-refresh prices when page loads
-            if (portfolio.length > 0) {
-                refreshPortfolioPrices();
-            }
-        });
-    </script>
-
     <style>
-        /* Base Styles */
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
+        :root {
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --primary-color: #588b7e;
+            --primary-light: #a7a6ac;
+            --secondary-color: #6c757d;
+            --success-color: #00c853;
+            --danger-color: #ff3d71;
+            --icon-color: #358b7e;
+            
+            --bs-body-bg: var(--light-bg);
+            --bs-body-color: #212529;
+            --card-bg: var(--light-card);
         }
-
+        
+        [data-bs-theme="dark"] {
+            --bs-body-bg: var(--dark-bg);
+            --bs-body-color: #f8f9fa;
+            --bs-tertiary-bg: #2c2c2c;
+            --bs-emphasis-color: #fff;
+            --card-bg: var(--dark-card);
+        }
+        
         body {
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.3s ease;
+            background-color: var(--bs-body-bg);
+        }
+        
+        .theme-toggler {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggler:hover {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background-color: var(--card-bg);
+        }
+        
+        .navbar {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background-color: transparent !important;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #358b7e; /* Change to consistent color regardless of theme */
+        }
+        
+        /* Navbar responsive behavior */
+        .navbar-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-controls {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* Ensure right alignment */
+        }
+        
+        @media (min-width: 991px) {
+            .navbar {
+                height: 0;
+                padding: 0;
+                overflow: hidden;
+                background: none !important;
+                box-shadow: none;
+            }
+            
+            .navbar-container {
+                display: none;
+            }
+            
+            .navbar-controls {
+                position: fixed;
+                top: 20px;
+                right: 30px;
+                z-index: 1050;
+                background-color: var(--card-bg);
+                border-radius: 50px;
+                padding: 8px 16px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+        }
+        
+        /* Ensure navbar controls stay on the right at all screen sizes */
+        @media (max-width: 990px) {
+            .navbar-container {
+                justify-content: space-between;
+            }
+            
+            .navbar-controls {
+                justify-content: flex-end;
+            }
         }
 
-        body.dark-theme {
-            background-color: #121212;
-            color: #f5f5f5;
+        /* Fix content padding for navbar on mobile */
+        @media (max-width: 990px) {
+            .main-content {
+                padding-top: 20px;
+            }
         }
 
-        /* Side Navigation */
+        .portfolio-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 1.5rem 0;
+        }
+        
+        .change-positive {
+            color: var(--success-color);
+        }
+        
+        .change-negative {
+            color: var(--danger-color);
+        }
+        
+        .coin-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .central-section {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .chart-card {
+            padding: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        #coinSearchResults {
+            position: absolute;
+            width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+        }
+        
+        .search-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-result-item:hover {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .badge-coin {
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .table-assets {
+            border-spacing: 0 8px;
+            border-collapse: separate;
+        }
+        
+        .table-assets tr {
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        
+        .table-assets tr:hover {
+            transform: translateY(-2px);
+        }
+        
+        .table-assets th {
+            border: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        
+        .table-assets td {
+            background-color: var(--card-bg);
+            padding: 16px;
+            vertical-align: middle;
+            border: none;
+        }
+        
+        .table-assets td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        
+        .table-assets td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-icon:hover {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 30px 0;
+            color: var(--secondary-color);
+        }
+        
+        .separator::before,
+        .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(108, 99, 255, 0.2);
+        }
+        
+        .separator::before {
+            margin-right: 1em;
+        }
+        
+        .separator::after {
+            margin-left: 1em;
+        }
+        
+        .time-filter {
+            cursor: pointer;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            font-weight: 500;
+            margin-left: 4px;
+        }
+        
+        .time-filter.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .time-filter:not(.active) {
+            background-color: rgba(108, 99, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .view-toggle-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+        
+        .view-toggle-icon.active {
+            background-color: var(--icon-color);
+            color: white;
+        }
+        
+        .view-toggle-icon:not(.active):hover {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .portfolio-logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .empty-state {
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+        
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+        }
+        
+        .color-sample {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+        
+        .view-toggle-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 15px;
+            display: flex;
+            z-index: 10;
+        }
+        
+        .asset-count {
+            background-color: rgba(108, 99, 255, 0.1);
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        
         .side-navigation {
             position: fixed;
             top: 0;
             left: 0;
             height: 100%;
             width: 70px;
-            background-color: rgba(23, 24, 23, 0.9);
+            background-color: var(--dark-card);
             box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px 0;
-            transition: width 0.3s ease;
+            transition: width 0.3s ease, background-color 0.3s ease;
         }
-
-        /* Side Navigation Hover Effect */
+        
+        [data-bs-theme="light"] .side-navigation {
+            background-color: transp;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-bs-theme="dark"] .side-navigation {
+            background-color: rgba(23, 24, 23, 0.9);
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
         .side-navigation:hover {
             width: 200px;
         }
-
-        /* Side Navigation Items */
+        
         .side-nav-items {
             list-style: none;
             padding: 0;
-            margin: 60px 0 0 0;
+            margin: 0;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-top: 60px;
         }
-
+        
         .side-nav-item {
             width: 90%;
             margin: 6px 0;
             border-radius: 12px;
             overflow: hidden;
         }
-
+        
         .side-nav-item a {
             display: flex;
             align-items: center;
@@ -664,19 +440,17 @@
             white-space: nowrap;
             margin-left: 5px;
         }
-
+        
         .side-nav-item a:hover {
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
+        
         .side-nav-item.active a {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #f6cb8e;
+            background-color: rgba(255, 255, 255, 0.3);
         }
-
-        /* Navigation Icons */
+        
         .nav-icon {
             font-size: 22px;
             margin-right: 15px;
@@ -685,8 +459,7 @@
             display: flex;
             justify-content: center;
         }
-
-        /* Navigation Labels */
+        
         .nav-label {
             font-size: 14px;
             font-weight: 500;
@@ -694,1535 +467,2266 @@
             transition: opacity 0.3s ease;
             color: white;
         }
-
+        
         .side-navigation:hover .nav-label {
             opacity: 1;
         }
-
-        /* Bottom Navigation */
-        .bottom-navigation {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 10px;
-            box-sizing: border-box;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-
-        body.dark-theme .bottom-navigation {
-            background-color: rgba(23, 24, 23, 0.95);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Bottom Navigation Items */
-        .bottom-navigation .nav-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: rgba(0, 0, 0, 0.8);
-            transition: color 0.3s ease, transform 0.3s ease;
-            flex: 1;
-            height: 100%;
-        }
-
-        body.dark-theme .bottom-navigation .nav-item {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .bottom-navigation .nav-item:hover {
-            color: #f6cb8e;
-            transform: scale(1.1);
-        }
-
-        .bottom-navigation .nav-item.active {
-            color: #f6cb8e;
-        }
-
-        /* Bottom Navigation Icons */
-        .bottom-navigation .material-symbols-outlined {
-            font-size: 27px;
-            transition: color 0.3s ease;
-        }
-
-        .bottom-navigation .nav-item:hover .material-symbols-outlined {
-            color: #f6cb8e;
-        }
-
-        /* Zenus Icon */
-        .bottom-navigation .zenus-icon {
-            width: 28px;
-            height: 22px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-
-        .bottom-navigation .nav-item:hover .zenus-icon {
-            transform: scale(1.2);
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            padding: 20px;
-            padding-bottom: 80px; /* Extra padding at bottom for bottom nav */
-            position: relative;
-        }
-
-        .wallet-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .page-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        body.dark-theme .page-title {
-            color: #f5f5f5;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        body.dark-theme .subtitle {
-            color: #aaa;
-        }
-
-        /* Add Asset Form */
-        .add-asset-form {
-            margin-bottom: 30px;
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        body.dark-theme .add-asset-form {
-            background-color: #242424;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .form-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .search-container {
-            position: relative;
-            flex: 2;
-        }
-
-        .coin-input, .amount-input {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.3s;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .amount-input {
-            flex: 1;
-        }
-
-        .coin-input:focus, .amount-input:focus {
-            border-color: #f6cb8e;
-            outline: none;
-        }
-
-        body.dark-theme .coin-input, 
-        body.dark-theme .amount-input {
-            background-color: #2a2a2a;
-            border-color: #444;
-            color: #fff;
-        }
-
-        /* Search Results */
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        body.dark-theme .search-results {
-            background-color: #2a2a2a;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-result-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .search-result-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        body.dark-theme .search-result-item:hover {
-            background-color: #333;
-        }
-
-        .search-result-item .coin-thumb {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            border-radius: 50%;
-        }
-
-        .search-result-item .coin-info {
-            flex: 1;
-        }
-
-        .search-result-item .coin-name {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .search-result-item .coin-symbol {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .search-error, .no-results {
-            padding: 15px;
-            text-align: center;
-            color: #888;
-        }
-
-        .add-button {
-            background-color: #f6cb8e;
-            color: #333;
-            border: none;
-            border-radius: 8px;
-            padding: 0 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .add-button:hover:not(:disabled) {
-            background-color: #e5ba7d;
-            transform: translateY(-2px);
-        }
-
-        .add-button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .form-hint {
-            font-size: 13px;
-            color: #888;
-        }
-
-        body.dark-theme .form-hint {
-            color: #aaa;
-        }
-
-        /* Portfolio Summary */
-        .portfolio-summary {
-            margin-top: 30px;
-        }
-
-        .summary-card {
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        body.dark-theme .summary-card {
-            background-color: #242424;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .summary-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .summary-header h2 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .last-updated {
-            font-size: 14px;
-            color: #888;
-        }
-
-        .total-value {
-            display: flex;
-            align-items: baseline;
-            margin-bottom: 10px;
-        }
-
-        .value-label {
-            font-size: 16px;
-            color: #666;
-            margin-right: 10px;
-        }
-
-        body.dark-theme .value-label {
-            color: #bbb;
-        }
-
-        .value-amount {
-            font-size: 28px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        body.dark-theme .value-amount {
-            color: #fff;
-        }
-
-        .value-change {
-            display: flex;
-            align-items: center;
-        }
-
-        .change-label {
-            font-size: 16px;
-            color: #666;
-            margin-right: 10px;
-        }
-
-        body.dark-theme .change-label {
-            color: #bbb;
-        }
-
-        .positive-change {
-            color: #0ea47a;
-            font-weight: 600;
-        }
-
-        .negative-change {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .refresh-button {
-            background: none;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .refresh-button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-            color: #666;
-        }
-
-        body.dark-theme .refresh-button {
-            color: #aaa;
-        }
-
-        body.dark-theme .refresh-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ccc;
-        }
-
-        /* Assets Section */
-        .assets-container {
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        body.dark-theme .assets-container {
-            background-color: #242424;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .assets-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .assets-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .clear-button {
-            background-color: transparent;
-            color: #888;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .clear-button:hover {
-            background-color: #f5f5f5;
-            color: #666;
-        }
-
-        body.dark-theme .clear-button {
-            color: #aaa;
-            border-color: #444;
-        }
-
-        body.dark-theme .<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallet - Platone</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Add Chart.js for portfolio distribution -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <!-- Side Navigation for Screens > 991px -->
-    <nav class="side-navigation">
-        <ul class="side-nav-items">
-            <li class="side-nav-item">
-                <a href="riki.html">
-                    <span class="nav-icon material-symbols-outlined">home</span>
-                    <span class="nav-label">Home</span>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="#zenus">
-                    <span class="nav-icon">
-                        <img src="zenus.png" alt="Zenus" style="width: 22px; height: 22px;">
-                    </span>
-                    <span class="nav-label">Zenus AI</span>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="#charts">
-                    <span class="nav-icon material-symbols-outlined">monitoring</span>
-                    <span class="nav-label">Charts</span>
-                </a>
-            </li>
-            <li class="side-nav-item active">
-                <a href="wallet.html">
-                    <span class="nav-icon material-symbols-outlined">wallet</span>
-                    <span class="nav-label">Wallet</span>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="#profile">
-                    <span class="nav-icon material-symbols-outlined">person</span>
-                    <span class="nav-label">Profile</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Bottom Navigation for Screens ≤ 990px -->
-    <nav class="bottom-navigation">
-        <a href="riki.html" class="nav-item">
-            <span class="material-symbols-outlined">home</span>
-        </a>
-        <a href="#zenus" class="nav-item">
-            <span class="nav-icon">
-                <img src="zenus.png" alt="Zenus" class="zenus-icon">
-            </span>
-        </a>
-        <a href="#charts" class="nav-item">
-            <span class="material-symbols-outlined">monitoring</span>
-        </a>
-        <a href="wallet.html" class="nav-item active">
-            <span class="material-symbols-outlined">wallet</span>
-        </a>
-        <a href="#profile" class="nav-item">
-            <span class="material-symbols-outlined">person</span>
-        </a>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="wallet-container">
-            <h1 class="page-title">Portfolio Tracker</h1>
-            <p class="subtitle">Add your holdings manually to track your portfolio</p>
-            
-            <div class="add-asset-form">
-                <div class="form-row">
-                    <div class="search-container">
-                        <input type="text" id="coin-search" placeholder="Search for any cryptocurrency..." class="coin-input">
-                        <div id="search-results" class="search-results">
-                            <!-- Search results will appear here -->
-                        </div>
-                    </div>
-                    <input type="number" id="coin-amount" placeholder="Amount" class="amount-input" step="any">
-                    <button id="add-coin" class="add-button" disabled>Add Coin</button>
-                </div>
-                <div class="form-hint">Search for any cryptocurrency and enter the amount you own</div>
-            </div>
-            
-            <div id="portfolio-summary" class="portfolio-summary">
-                <div class="summary-card">
-                    <div class="summary-header">
-                        <h2>Portfolio Overview</h2>
-                        <span class="last-updated">Last updated: <span id="update-time">Just now</span></span>
-                    </div>
-                    <div class="total-value">
-                        <span class="value-label">Total Value:</span>
-                        <span id="total-value" class="value-amount">$0.00</span>
-                    </div>
-                    <div class="value-change">
-                        <span class="change-label">24h Change:</span>
-                        <span id="daily-change" class="change-amount">+0.00%</span>
-                    </div>
-                </div>
-                
-                <div class="assets-container">
-                    <div class="assets-header">
-                        <h2>Your Assets</h2>
-                        <button id="clear-all" class="clear-button">Clear All</button>
-                    </div>
-                    <div class="assets-list" id="assets-list">
-                        <!-- Asset items will be added here dynamically -->
-                        <div class="empty-list" id="empty-list">
-                            <span class="material-symbols-outlined">add_circle</span>
-                            <p>Add your first coin above to start tracking</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chart-container">
-                    <h2>Portfolio Distribution</h2>
-                    <div id="chart-area" class="chart-area">
-                        <canvas id="portfolio-chart"></canvas>
-                        <div class="chart-placeholder" id="chart-placeholder">
-                            <span class="material-symbols-outlined">pie_chart</span>
-                            <p>Chart will appear when you add coins</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="disclaimer">
-                <p><strong>Note:</strong> Your portfolio data is saved locally in your browser and is not sent to any server. Price data is retrieved from CoinGecko API.</p>
-            </div>
-        </div>
-
-        <!-- Loading overlay -->
-        <div id="loading-overlay" class="loading-overlay">
-            <div class="spinner"></div>
-            <p>Loading data...</p>
-        </div>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check for saved theme preference
-            const savedDarkMode = localStorage.getItem('darkMode');
-            if (savedDarkMode === 'true') {
-                document.body.classList.add('dark-theme');
-            }
-            
-            // Initialize variables
-            let portfolio = JSON.parse(localStorage.getItem('portfolio')) || [];
-            let totalValue = 0;
-            let totalChange = 0;
-            let searchTimeout;
-            let selectedCoin = null;
-            let portfolioChart = null;
-            
-            // Elements
-            const coinSearchInput = document.getElementById('coin-search');
-            const searchResults = document.getElementById('search-results');
-            const addCoinBtn = document.getElementById('add-coin');
-            const coinAmountInput = document.getElementById('coin-amount');
-            const assetsList = document.getElementById('assets-list');
-            const emptyList = document.getElementById('empty-list');
-            const totalValueElement = document.getElementById('total-value');
-            const dailyChangeElement = document.getElementById('daily-change');
-            const updateTimeElement = document.getElementById('update-time');
-            const clearAllBtn = document.getElementById('clear-all');
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const chartPlaceholder = document.getElementById('chart-placeholder');
-            
-            // Update UI when page loads
-            updatePortfolioUI();
-            
-            // Search input event
-            coinSearchInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                
-                // Clear previous timeout
-                if (searchTimeout) {
-                    clearTimeout(searchTimeout);
-                }
-                
-                // Reset selected coin
-                selectedCoin = null;
-                addCoinBtn.disabled = true;
-                
-                // Clear results if query is empty
-                if (query === '') {
-                    searchResults.innerHTML = '';
-                    searchResults.style.display = 'none';
-                    return;
-                }
-                
-                // Set timeout to avoid too many API calls
-                searchTimeout = setTimeout(() => {
-                    searchCoin(query);
-                }, 500);
-            });
-            
-            // Hide search results when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!coinSearchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                    searchResults.style.display = 'none';
-                }
-            });
-            
-            // Add coin button event
-            addCoinBtn.addEventListener('click', function() {
-                const amount = parseFloat(coinAmountInput.value);
-                
-                if (selectedCoin && amount > 0) {
-                    // Show loading overlay
-                    loadingOverlay.classList.add('active');
-                    
-                    // Fetch current price for the selected coin
-                    fetchCoinPrice(selectedCoin.id, amount);
-                } else {
-                    alert('Please select a coin and enter a valid amount');
-                }
-            });
-            
-            // Clear all button event
-            clearAllBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to clear your entire portfolio?')) {
-                    portfolio = [];
-                    localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                    updatePortfolioUI();
-                }
-            });
-            
-            // Function to search for coins
-            async function searchCoin(query) {
-                try {
-                    const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
-                    const data = await response.json();
-                    
-                    // Display results
-                    displaySearchResults(data.coins.slice(0, 8)); // Limit to 8 results
-                } catch (error) {
-                    console.error('Error searching for coins:', error);
-                    searchResults.innerHTML = '<div class="search-error">Error searching for coins. Try again later.</div>';
-                    searchResults.style.display = 'block';
-                }
-            }
-            
-            // Function to display search results
-            function displaySearchResults(coins) {
-                if (coins.length === 0) {
-                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
-                    searchResults.style.display = 'block';
-                    return;
-                }
-                
-                // Clear previous results
-                searchResults.innerHTML = '';
-                
-                // Add each result
-                coins.forEach(coin => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'search-result-item';
-                    resultItem.innerHTML = `
-                        <img src="${coin.thumb}" alt="${coin.name}" class="coin-thumb">
-                        <div class="coin-info">
-                            <div class="coin-name">${coin.name}</div>
-                            <div class="coin-symbol">${coin.symbol.toUpperCase()}</div>
-                        </div>
-                    `;
-                    
-                    // Add click event
-                    resultItem.addEventListener('click', function() {
-                        selectedCoin = coin;
-                        coinSearchInput.value = `${coin.name} (${coin.symbol.toUpperCase()})`;
-                        searchResults.style.display = 'none';
-                        addCoinBtn.disabled = false;
-                    });
-                    
-                    searchResults.appendChild(resultItem);
-                });
-                
-                searchResults.style.display = 'block';
-            }
-            
-            // Function to fetch coin price and add to portfolio
-            async function fetchCoinPrice(coinId, amount) {
-                try {
-                    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`);
-                    const data = await response.json();
-                    
-                    const price = data.market_data.current_price.usd;
-                    const change24h = data.market_data.price_change_percentage_24h || 0;
-                    const value = price * amount;
-                    const icon = data.image.thumb;
-                    
-                    // Create asset object
-                    const asset = {
-                        id: data.id,
-                        name: data.name,
-                        symbol: data.symbol.toUpperCase(),
-                        amount: amount,
-                        price: price,
-                        value: value,
-                        change: change24h,
-                        icon: icon
-                    };
-                    
-                    // Check if coin already exists in portfolio
-                    const existingIndex = portfolio.findIndex(item => item.id === asset.id);
-                    
-                    if (existingIndex >= 0) {
-                        // Update existing coin
-                        portfolio[existingIndex].amount += amount;
-                        portfolio[existingIndex].value = portfolio[existingIndex].amount * price;
-                    } else {
-                        // Add new coin
-                        portfolio.push(asset);
-                    }
-                    
-                    // Save and update UI
-                    localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                    
-                    // Clear inputs
-                    coinSearchInput.value = '';
-                    coinAmountInput.value = '';
-                    selectedCoin = null;
-                    addCoinBtn.disabled = true;
-                    
-                    // Update UI
-                    updatePortfolioUI();
-                    
-                    // Hide loading overlay
-                    loadingOverlay.classList.remove('active');
-                } catch (error) {
-                    console.error('Error fetching coin price:', error);
-                    alert('Error fetching coin price. Please try again later.');
-                    
-                    // Hide loading overlay
-                    loadingOverlay.classList.remove('active');
-                }
-            }
-            
-            // Function to refresh portfolio prices
-            async function refreshPortfolioPrices() {
-                if (portfolio.length === 0) return;
-                
-                // Show loading overlay
-                loadingOverlay.classList.add('active');
-                
-                try {
-                    // Get all coin IDs in portfolio
-                    const coinIds = portfolio.map(asset => asset.id).join(',');
-                    
-                    // Fetch current prices for all coins
-                    const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinIds}&price_change_percentage=24h`);
-                    const data = await response.json();
-                    
-                    // Update portfolio with new prices
-                    portfolio = portfolio.map(asset => {
-                        const coinData = data.find(coin => coin.id === asset.id);
-                        if (coinData) {
-                            return {
-                                ...asset,
-                                price: coinData.current_price,
-                                value: asset.amount * coinData.current_price,
-                                change: coinData.price_change_percentage_24h || 0
-                            };
-                        }
-                        return asset;
-                    });
-                    
-                    // Save and update UI
-                    localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                    updatePortfolioUI();
-                } catch (error) {
-                    console.error('Error refreshing portfolio prices:', error);
-                } finally {
-                    // Hide loading overlay
-                    loadingOverlay.classList.remove('active');
-                }
-            }
-            
-            // Update portfolio UI
-            function updatePortfolioUI() {
-                // Clear current list
-                assetsList.innerHTML = '';
-                
-                if (portfolio.length === 0) {
-                    emptyList.style.display = 'flex';
-                    totalValueElement.textContent = '$0.00';
-                    dailyChangeElement.textContent = '+0.00%';
-                    dailyChangeElement.className = 'change-amount';
-                    
-                    // Hide chart, show placeholder
-                    chartPlaceholder.style.display = 'flex';
-                    if (portfolioChart) {
-                        portfolioChart.destroy();
-                        portfolioChart = null;
-                    }
-                    return;
-                }
-                
-                emptyList.style.display = 'none';
-                
-                // Calculate totals
-                totalValue = 0;
-                let weightedChange = 0;
-                
-                portfolio.forEach(asset => {
-                    totalValue += asset.value;
-                    weightedChange += (asset.change * asset.value);
-                });
-                
-                // Calculate weighted average change
-                totalChange = weightedChange / totalValue;
-                
-                // Update summary values
-                totalValueElement.textContent = formatCurrency(totalValue);
-                dailyChangeElement.textContent = formatPercentage(totalChange);
-                dailyChangeElement.className = totalChange >= 0 ? 'change-amount positive-change' : 'change-amount negative-change';
-                updateTimeElement.textContent = new Date().toLocaleTimeString();
-                
-                // Sort portfolio by value (highest first)
-                portfolio.sort((a, b) => b.value - a.value);
-                
-                // Add each asset to the list
-                portfolio.forEach(asset => {
-                    const assetItem = document.createElement('div');
-                    assetItem.className = 'asset-item';
-                    
-                    const changeClass = asset.change >= 0 ? 'positive-change' : 'negative-change';
-                    
-                    assetItem.innerHTML = `
-                        <div class="asset-icon">
-                            <img src="${asset.icon}" alt="${asset.symbol}">
-                        </div>
-                        <div class="asset-details">
-                            <div class="asset-name">${asset.name} <span class="asset-symbol">${asset.symbol}</span></div>
-                            <div class="asset-amount">${formatNumber(asset.amount)} ${asset.symbol}</div>
-                        </div>
-                        <div class="asset-value">
-                            <div class="value">${formatCurrency(asset.value)}</div>
-                            <div class="change ${changeClass}">${formatPercentage(asset.change)}</div>
-                        </div>
-                        <button class="remove-asset" data-id="${asset.id}">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
-                    `;
-                    
-                    assetsList.appendChild(assetItem);
-                });
-                
-                // Add event listeners for remove buttons
-                document.querySelectorAll('.remove-asset').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        removeAsset(id);
-                    });
-                });
-                
-                // Update portfolio chart
-                updatePortfolioChart();
-            }
-            
-            // Function to update portfolio chart
-            function updatePortfolioChart() {
-                if (portfolio.length === 0) return;
-                
-                // Hide placeholder
-                chartPlaceholder.style.display = 'none';
-                
-                // Prepare data for chart
-                const labels = portfolio.map(asset => asset.symbol);
-                const data = portfolio.map(asset => asset.value);
-                const backgroundColor = generateChartColors(portfolio.length);
-                
-                // Create or update chart
-                if (portfolioChart) {
-                    portfolioChart.data.labels = labels;
-                    portfolioChart.data.datasets[0].data = data;
-                    portfolioChart.data.datasets[0].backgroundColor = backgroundColor;
-                    portfolioChart.update();
-                } else {
-                    const ctx = document.getElementById('portfolio-chart').getContext('2d');
-                    portfolioChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                data: data,
-                                backgroundColor: backgroundColor,
-                                borderWidth: 2,
-                                borderColor: document.body.classList.contains('dark-theme') ? '#242424' : '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        color: document.body.classList.contains('dark-theme') ? '#f5f5f5' : '#333',
-                                        padding: 15,
-                                        usePointStyle: true,
-                                        pointStyle: 'circle'
-                                    }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            const value = context.raw;
-                                            const total = context.chart.getDatasetMeta(0).total;
-                                            const percentage = Math.round((value / total) * 100);
-                                            return `${context.label}: ${formatCurrency(value)} (${percentage}%)`;
-                                        }
-                                    }
-                                }
-                            },
-                            cutout: '70%'
-                        }
-                    });
-                }
-            }
-            
-            // Function to generate chart colors
-            function generateChartColors(count) {
-                const baseColors = [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
-                    '#FF9F40', '#8AC249', '#EA5545', '#F46A9B', '#EF9B20'
-                ];
-                
-                // If we need more colors than in our base array, generate them
-                if (count <= baseColors.length) {
-                    return baseColors.slice(0, count);
-                }
-                
-                // Generate additional colors
-                const colors = [...baseColors];
-                for (let i = baseColors.length; i < count; i++) {
-                    const hue = (i * 137.5) % 360; // Use golden ratio to spread colors
-                    colors.push(`hsl(${hue}, 70%, 60%)`);
-                }
-                
-                return colors;
-            }
-            
-            // Remove an asset from portfolio
-            function removeAsset(id) {
-                portfolio = portfolio.filter(asset => asset.id !== id);
-                localStorage.setItem('portfolio', JSON.stringify(portfolio));
-                updatePortfolioUI();
-            }
-            
-            // Helper functions for formatting
-            function formatCurrency(value) {
-                return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-            }
-            
-            function formatPercentage(value) {
-                return (value >= 0 ? '+' : '') + value.toFixed(2) + '%';
-            }
-            
-            function formatNumber(num) {
-                if (num >= 1000000) {
-                    return (num / 1000000).toFixed(2) + 'M';
-                } else if (num >= 1000) {
-                    return (num / 1000).toFixed(2) + 'K';
-                } else if (num < 0.001) {
-                    return num.toExponential(4);
-                } else {
-                    return num.toString();
-                }
-            }
-            
-            // Add refresh button to summary card
-            const summaryHeader = document.querySelector('.summary-header');
-            const refreshButton = document.createElement('button');
-            refreshButton.className = 'refresh-button';
-            refreshButton.innerHTML = '<span class="material-symbols-outlined">refresh</span>';
-            refreshButton.title = 'Refresh prices';
-            refreshButton.addEventListener('click', refreshPortfolioPrices);
-            summaryHeader.appendChild(refreshButton);
-            
-            // Auto-refresh prices when page loads
-            if (portfolio.length > 0) {
-                refreshPortfolioPrices();
-            }
-        });
-    </script>
-
-    <style>
-        /* Base Styles */
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        body {
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        body.dark-theme {
-            background-color: #121212;
-            color: #f5f5f5;
-        }
-
-        /* Side Navigation */
-        .side-navigation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 70px;
+        
+        /* Light Theme Sidebar - always keep dark for consistency */
+        body:not(.dark-theme) .side-navigation {
             background-color: rgba(23, 24, 23, 0.9);
-            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            transition: width 0.3s ease;
+            backdrop-filter: blur(10px);
         }
-
-        /* Side Navigation Hover Effect */
-        .side-navigation:hover {
-            width: 200px;
-        }
-
-        /* Side Navigation Items */
-        .side-nav-items {
-            list-style: none;
-            padding: 0;
-            margin: 60px 0 0 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .side-nav-item {
-            width: 90%;
-            margin: 6px 0;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .side-nav-item a {
-            display: flex;
-            align-items: center;
-            padding: 12px;
+        
+        body:not(.dark-theme) .side-nav-item a {
             color: white;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            border-radius: 12px;
-            overflow: hidden;
-            white-space: nowrap;
-            margin-left: 5px;
         }
-
-        .side-nav-item a:hover {
+        
+        body:not(.dark-theme) .side-nav-item a:hover {
             background-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
-        .side-nav-item.active a {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #f6cb8e;
-        }
-
-        /* Navigation Icons */
-        .nav-icon {
-            font-size: 22px;
-            margin-right: 15px;
-            min-width: 22px;
+        
+        body:not(.dark-theme) .nav-icon {
             color: white;
+        }
+        
+        body:not(.dark-theme) .nav-label {
+            color: white;
+        }
+        
+        /* Logo positioning at the top of sidebar */
+        .side-nav-logo {
+            margin-top: 10px;
+            margin-bottom: 30px;
+            width: 40px;
+            height: 40px;
             display: flex;
+            align-items: center;
             justify-content: center;
         }
-
-        /* Navigation Labels */
-        .nav-label {
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            color: white;
-        }
-
-        .side-navigation:hover .nav-label {
-            opacity: 1;
-        }
-
-        /* Bottom Navigation */
-        .bottom-navigation {
-            position: fixed;
-            bottom: 0;
-            left: 0;
+        
+        .side-nav-logo img {
             width: 100%;
-            height: 55px;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 10px;
-            box-sizing: border-box;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
+            height: auto;
+            transition: all 0.3s ease;
         }
-
-        body.dark-theme .bottom-navigation {
-            background-color: rgba(23, 24, 23, 0.95);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Bottom Navigation Items */
-        .bottom-navigation .nav-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: rgba(0, 0, 0, 0.8);
-            transition: color 0.3s ease, transform 0.3s ease;
-            flex: 1;
-            height: 100%;
-        }
-
-        body.dark-theme .bottom-navigation .nav-item {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .bottom-navigation .nav-item:hover {
-            color: #f6cb8e;
+        
+        .side-navigation:hover .side-nav-logo img {
             transform: scale(1.1);
         }
-
-        .bottom-navigation .nav-item.active {
-            color: #f6cb8e;
+        
+        /* Hide sidebar on small screens */
+        @media (max-width: 991px) {
+            .side-navigation {
+                display: none;
+            }
         }
+        
+        /* Fix content shifting */
+      
+        /* Bottom Navigation */
+ .bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    background-color: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
 
-        /* Bottom Navigation Icons */
-        .bottom-navigation .material-symbols-outlined {
-            font-size: 27px;
-            transition: color 0.3s ease;
-        }
+[data-bs-theme="dark"] .bottom-navigation {
+    background-color: var(--dark-card);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
 
-        .bottom-navigation .nav-item:hover .material-symbols-outlined {
-            color: #f6cb8e;
-        }
+/* Bottom Navigation Items */
+.bottom-navigation .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--bs-body-color);
+    transition: color 0.3s ease, transform 0.3s ease;
+    flex: 1;
+    height: 100%;
+}
 
-        /* Zenus Icon */
-        .bottom-navigation .zenus-icon {
-            width: 28px;
-            height: 22px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
+.bottom-navigation .nav-item:hover {
+    color: #f6cb8e;
+    transform: scale(1.1);
+}
 
-        .bottom-navigation .nav-item:hover .zenus-icon {
-            transform: scale(1.2);
-        }
+.bottom-navigation .nav-item.active {
+    color: #f6cb8e;
+}
 
-        /* Main Content Styles */
-        .main-content {
-            padding: 20px;
-            padding-bottom: 80px; /* Extra padding at bottom for bottom nav */
-            position: relative;
-        }
+/* Bottom Navigation Icons */
+.bottom-navigation .material-symbols-outlined {
+    font-size: 27px;
+    transition: color 0.3s ease;
+}
 
-        .wallet-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+.bottom-navigation .nav-item:hover .material-symbols-outlined {
+    color: #f6cb8e;
+}
 
-        .page-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #333;
-        }
+/* Zenus Icon */
+.bottom-navigation .zenus-icon {
+    width: 28px;
+    height: 22px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
 
-        body.dark-theme .page-title {
-            color: #f5f5f5;
-        }
+.bottom-navigation .nav-item:hover .zenus-icon {
+    transform: scale(1.2);
+}
 
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 30px;
-        }
+.bottom-navigation .nav-item:hover .zenus-icon {
+    transform: scale(1.2); /* Slight zoom effect on hover */
+}
 
-        body.dark-theme .subtitle {
-            color: #aaa;
-        }
+/* Navigation labels */
+.bottom-navigation .nav-label {
+    font-size: 10px; /* Smaller font size for labels */
+    font-weight: 500;
+    color: var(--bs-body-color); /* Light mode label color */
+    transition: color 0.3s ease;
+    margin-top: 2px; /* Reduce spacing between icon and label */
+    opacity: 1;
+}
 
-        /* Add Asset Form */
-        .add-asset-form {
-            margin-bottom: 30px;
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
+/* Show the bottom navigation bar only on screens ≤ 990px */
+@media (max-width: 990px) {
+    .bottom-navigation {
+        display: flex;
+    }
+}
 
-        body.dark-theme .add-asset-form {
-            background-color: #242424;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+/* Hide the bottom navigation bar on screens > 990px */
+@media (min-width: 991px) {
+    .bottom-navigation {
+        display: none;
+    }
+}
 
-        .form-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
+/* Add floating action button for adding assets on large screens */
+.add-asset-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: none; /* Hidden by default */
+}
 
-        .search-container {
-            position: relative;
-            flex: 2;
-        }
+.add-asset-fab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
 
-        .coin-input, .amount-input {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.3s;
-            width: 100%;
-            box-sizing: border-box;
-        }
+.add-asset-fab i {
+    font-size: 24px;
+}
 
-        .amount-input {
-            flex: 1;
-        }
+/* Only show on screens > 990px */
+@media (min-width: 991px) {
+    .add-asset-fab {
+        display: flex;
+    }
 
-        .coin-input:focus, .amount-input:focus {
-            border-color: #f6cb8e;
-            outline: none;
-        }
+}
+/* Mobile optimizations for screens 768px or smaller */
+@media (max-width: 768px) {
+    /* Make the search input and button smaller */
+    .input-group-lg {
+        height: auto;
+    }
+    
+    .input-group-lg input.form-control,
+    .input-group-lg .input-group-text {
+        font-size: 0.95rem;
+        padding: 0.375rem 0.75rem;
+        height: auto;
+    }
+    
+    .input-group-lg .input-group-text i {
+        font-size: 0.95rem;
+    }
+    
+    /* Increase spacing below search bar */
+    .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+}
 
-        body.dark-theme .coin-input, 
-        body.dark-theme .amount-input {
-            background-color: #2a2a2a;
-            border-color: #444;
-            color: #fff;
-        }
+/* Mobile optimizations for screens 768px or smaller */
+@media (max-width: 768px) {
+    /* Make the chart smaller */
+    .chart-container {
+        height: 220px;
+    }
+    
+    /* Adjust search bar to full width */
+    .mb-4 .input-group {
+        width: 100% !important;
+    }
+    
+    /* Simplify the assets table for mobile */
+    .table-assets th:nth-child(3),
+    .table-assets th:nth-child(5),
+    .table-assets th:nth-child(6),
+    .table-assets th:nth-child(7),
+    .table-assets td:nth-child(3),
+    .table-assets td:nth-child(5),
+    .table-assets td:nth-child(6),
+    .table-assets td:nth-child(7) {
+        display: none;
+    }
+    
+    /* Reduce padding in table cells */
+    .table-assets td {
+        padding: 12px 10px;
+    }
+    
+    /* Adjust portfolio value size */
+    .portfolio-value {
+        font-size: 2.5rem;
+    }
+    
+    /* Reduce paddings in cards */
+    .chart-card {
+        padding: 15px;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Adjust time filter buttons */
+    .time-filter {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        margin-left: 2px;
+    }
+    
+    /* Make action icons smaller but easier to tap */
+    .action-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    /* Reduce the size of coin logos */
+    .coin-logo {
+        width: 32px;
+        height: 32px;
+    }
+    
+    /* Show fewer details for assets */
+    .asset-name {
+        font-size: 0.9rem;
+    }
+    
+    .asset-symbol {
+        font-size: 0.7rem;
+    }
+    
+    /* Ensure action buttons remain visible and usable */
+    .d-flex .action-icon:first-child,
+    .d-flex .action-icon:last-child {
+        display: flex;
+    }
+    
+    /* Make table more compact but readable */
+    #assetsTable {
+        font-size: 0.9rem;
+    }
+}
 
-        /* Search Results */
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
+/* Extra small device optimizations (480px or smaller) */
+@media (max-width: 480px) {
+    /* Make chart even smaller */
+    .chart-container {
+        height: 180px;
+    }
+    
+    /* Further reduce portfolio value size */
+    .portfolio-value {
+        font-size: 2rem;
+        margin: 1rem 0;
+    }
+    
+    /* Make time filters more compact */
+    .time-filter {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+        margin-left: 1px;
+    }
+    
+    /* Reduce chart card padding */
+    .chart-card {
+        padding: 10px;
+        margin-bottom: 1rem;
+    }
+    
+    /* Further simplify assets table */
+    .table-assets th:nth-child(2),
+    .table-assets th:nth-child(3),
+    .table-assets th:nth-child(5),
+    .table-assets th:nth-child(6),
+    .table-assets th:nth-child(7),
+    .table-assets td:nth-child(2),
+    .table-assets td:nth-child(3),
+    .table-assets td:nth-child(5),
+    .table-assets td:nth-child(6),
+    .table-assets td:nth-child(7) {
+        display: none;
+    }
+    
+    /* Smaller asset search field */
+    .input-group-lg input.form-control,
+    .input-group-lg .input-group-text {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    /* More compact asset rows */
+    .table-assets td {
+        padding: 8px 5px;
+    }
+    
+    /* Smaller coin logos */
+    .coin-logo {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px !important;
+    }
+    
+    /* Reduce action icon size but keep them readable */
+    .action-icon {
+        width: 28px;
+        height: 28px;
+        margin-right: 5px !important;
+    }
+    
+    /* Adjust asset name and symbol size */
+    .asset-name {
+        font-size: 0.85rem;
+    }
+    
+    .asset-symbol {
+        font-size: 0.65rem;
+    }
+    
+    /* Reduce section separators */
+    .separator {
+        margin: 20px 0;
+    }
+    
+    /* Ensure holdings column is more compact */
+    #assetsTable {
+        font-size: 0.85rem;
+    }
+}
+/* Extra small device optimizations (480px or smaller) */
+@media (max-width: 480px) {
+    /* Make chart even smaller */
+    .chart-container {
+        height: 180px;
+    }
+    
+    /* Further reduce portfolio value size */
+    .portfolio-value {
+        font-size: 2rem;
+        margin: 1rem 0;
+    }
+    
+    /* Make time filters more compact */
+    .time-filter {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+        margin-left: 1px;
+    }
+    
+    /* Reduce chart card padding */
+    .chart-card {
+        padding: 10px;
+        margin-bottom: 1rem;
+    }
+    
+    /* Further simplify assets table */
+    .table-assets th:nth-child(2),
+    .table-assets th:nth-child(3),
+    .table-assets th:nth-child(5),
+    .table-assets th:nth-child(6),
+    .table-assets th:nth-child(7),
+    .table-assets td:nth-child(2),
+    .table-assets td:nth-child(3),
+    .table-assets td:nth-child(5),
+    .table-assets td:nth-child(6),
+    .table-assets td:nth-child(7) {
+        display: none;
+    }
+    
+    /* Smaller asset search field */
+    .input-group-lg input.form-control,
+    .input-group-lg .input-group-text {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    /* More compact asset rows */
+    .table-assets td {
+        padding: 8px 5px;
+    }
+    
+    /* Smaller coin logos */
+    .coin-logo {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px !important;
+    }
+    
+    /* Reduce action icon size but keep them readable */
+    .action-icon {
+        width: 28px;
+        height: 28px;
+        margin-right: 5px !important;
+    }
+    
+    /* Adjust asset name and symbol size */
+    .asset-name {
+        font-size: 0.85rem;
+    }
+    
+    .asset-symbol {
+        font-size: 0.65rem;
+    }
+    
+    /* Reduce section separators */
+    .separator {
+        margin: 20px 0;
+    }
+    
+    /* Ensure holdings column is more compact */
+    #assetsTable {
+        font-size: 0.85rem;
+    }
+}
+/* Clean chart styling for smaller screens */
+@media (max-width: 768px) {
+    /* Chart container with proper spacing and positioning */
+    .chart-container {
+        height: 220px;
+        position: relative;
+        overflow: hidden; /* Hide overflow except for point markers */
+        margin: 0;
+        padding: 5px 0 15px; /* Add padding for point indicators */
+    }
+    
+    /* Cleaner threshold line styling */
+    .threshold-line {
+        position: absolute;
+        height: 0;
+        border-top: 1px dashed rgba(125, 125, 125, 0.4);
+        z-index: 5;
+        pointer-events: none;
+        width: 100%;
+        left: 0;
+    }
+    
+    /* Improved high/low point labels */
+    .price-point {
+        position: absolute;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 11;
+        color: var(--bs-body-color);
+        opacity: 0.9;
+        padding: 2px 6px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transform: translateX(-50%);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+    
+    [data-bs-theme="dark"] .price-point {
+        background-color: rgba(40, 40, 40, 0.8);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+}
 
-        body.dark-theme .search-results {
-            background-color: #2a2a2a;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-result-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .search-result-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        body.dark-theme .search-result-item:hover {
-            background-color: #333;
-        }
-
-        .search-result-item .coin-thumb {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            border-radius: 50%;
-        }
-
-        .search-result-item .coin-info {
-            flex: 1;
-        }
-
-        .search-result-item .coin-name {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .search-result-item .coin-symbol {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .search-error, .no-results {
-            padding: 15px;
-            text-align: center;
-            color: #888;
-        }
-
-        .add-button {
-            background-color: #f6cb8e;
-            color: #333;
-            border: none;
-            border-radius: 8px;
-            padding: 0 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .add-button:hover:not(:disabled) {
-            background-color: #e5ba7d;
-            transform: translateY(-2px);
-        }
-
-        .add-button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .form-hint {
-            font-size: 13px;
-            color: #888;
-        }
-
-        body.dark-theme .form-hint {
-            color: #aaa;
-        }
-
-        /* Portfolio Summary */
-        .portfolio-summary {
-            margin-top: 30px;
-        }
-
-        .summary-card {
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        body.dark-theme .summary-card {
-            background-color: #242424;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .summary-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .summary-header h2 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .last-updated {
-            font-size: 14px;
-            color: #888;
-        }
-
-        .total-value {
-            display: flex;
-            align-items: baseline;
-            margin-bottom: 10px;
-        }
-
-        .value-label {
-            font-size: 16px;
-            color: #666;
-            margin-right: 10px;
-        }
-
-        body.dark-theme .value-label {
-            color: #bbb;
-        }
-
-        .value-amount {
-            font-size: 28px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        body.dark-theme .value-amount {
-            color: #fff;
-        }
-
-        .value-change {
-            display: flex;
-            align-items: center;
-        }
-
-        .change-label {
-            font-size: 16px;
-            color: #666;
-            margin-right: 10px;
-        }
-
-        body.dark-theme .change-label {
-            color: #bbb;
-        }
-
-        .positive-change {
-            color: #0ea47a;
-            font-weight: 600;
-        }
-
-        .negative-change {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .refresh-button {
-            background: none;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .refresh-button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-            color: #666;
-        }
-
-        body.dark-theme .refresh-button {
-            color: #aaa;
-        }
-
-        body.dark-theme .refresh-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ccc;
-        }
-
-        /* Assets Section */
-        .assets-container {
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        body.dark-theme .assets-container {
-            background-color: #242424;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .assets-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .assets-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .clear-button {
-            background-color: transparent;
-            color: #888;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .clear-button:hover {
-            background-color: #f5f5f5;
-            color: #666;
-        }
-
-        body.dark-theme .clear-button {
-            color: #aaa;
-            border-color: #444;
-        }
-
-
+/* Extra small device optimizations (480px or smaller) */
+@media (max-width: 480px) {
+    .chart-container {
+        height: 180px;
+    }
+    
+    /* Smaller point labels for very small screens */
+    .price-point {
+        font-size: 0.65rem;
+        padding: 1px 4px;
+    }
+}
     </style>
+</head>
+<body>
+    <!-- Side Navigation -->
+    <nav class="side-navigation">
+        <div class="side-nav-logo">
+            <img src="logoj copy.png" alt="Platone Logo">
+        </div>
+        <ul class="side-nav-items">
+            <li class="side-nav-item active">
+                <a href="riki.html">
+                    <span class="nav-icon material-icons">dashboard</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="#features">
+                    <span class="nav-icon material-icons">insights</span>
+                    <span class="nav-label">Features</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="#deepchart">
+                    <span class="nav-icon material-icons">candlestick_chart</span>
+                    <span class="nav-label">Chart</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="#etfs">
+                    <span class="nav-icon material-icons">account_balance</span>
+                    <span class="nav-label">ETFs</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="#news">
+                    <span class="nav-icon material-icons">article</span>
+                    <span class="nav-label">News</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="#zenus">
+                    <span class="nav-icon">
+                        <img src="zenus.png" alt="Zenus" style="width: 22px; height: 22px;">
+                    </span>
+                    <span class="nav-label">Zenus AI</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="#profile">
+                    <span class="nav-icon material-icons">account_circle</span>
+                    <span class="nav-label">Profile</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container-fluid px-4 navbar-container">
+            <a class="navbar-brand" href="#">
+                <img src="logoj copy.png" alt="Platone" height="30" class="me-2">
+                Platone
+            </a>
+            <div class="navbar-controls">
+                <div class="theme-toggler me-3" id="themeToggler">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addCoinModal">
+                    <i class="fas fa-plus me-2"></i>Add Asset
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4 main-content">
+        <!-- Central Portfolio Value Section -->
+        <div class="central-section">
+            <div class="view-toggle-container">
+                <div class="view-toggle-icon active me-2" id="performanceToggle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="view-toggle-icon" id="allocationToggle">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <h6 class="text-muted" id="portfolioLabel">Total Portfolio Value</h6>
+                <div class="portfolio-value" id="totalValue">$0.00</div>
+                <div id="performanceInfo">
+                    <div class="d-flex align-items-center justify-content-center" id="totalValueChange">
+                        <span class="change-positive me-2">
+                            <i class="fas fa-caret-up me-1"></i> 0.00%
+                        </span>
+                        <span class="text-muted">vs purchase price</span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-muted">Assets: </span>
+                        <span class="asset-count" id="assetsCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chart Card -->
+        <div class="card chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div id="chartTitle" class="fw-bold">Portfolio Performance</div>
+                <div id="timeFilters" class="d-flex">
+                    <span class="time-filter active" data-period="7d">7D</span>
+                    <span class="time-filter" data-period="30d">1M</span>
+                    <span class="time-filter" data-period="90d">3M</span>
+                    <span class="time-filter" data-period="1y">1Y</span>
+                </div>
+            </div>
+            <div class="chart-container" id="performanceChartContainer">
+                <canvas id="performanceChart"></canvas>
+            </div>
+            <div class="chart-container" id="allocationChartContainer" style="display: none;">
+                <div class="row">
+                    <div class="col-md-7">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="allocation-legend mt-3" id="allocationLegend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assets Table Section -->
+        <div class="separator">
+            <span>Your Assets</span>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="mb-4">
+                    <div class="input-group input-group-lg w-100 w-md-50 mx-auto">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" id="assetFilter" placeholder="Search assets...">
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-assets" id="assetsTable">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Price</th>
+                                <th>24h</th>
+                                <th>Holdings</th>
+                                <th>Avg Buy</th>
+                                <th>Value</th>
+                                <th>Profit/Loss</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="portfolioTable">
+                            <!-- Will be filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+         <!-- Bottom Navigation Bar -->
+<!-- Bottom Navigation Bar -->
+<nav class="bottom-navigation">
+    <a href="riki.html" class="nav-item">
+        <span class="material-symbols-outlined">home</span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="#zenus" class="nav-item">
+        <span class="nav-icon">
+            <img src="zenus.png" alt="Zenus" class="zenus-icon">
+        </span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="#charts" class="nav-item">
+        <span class="material-symbols-outlined">
+monitoring
+</span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="wallet.html" class="nav-item">
+        <span class="material-symbols-outlined">wallet</span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="#profile" class="nav-item">
+        <span class="material-symbols-outlined">person</span>
+        <span class="nav-label"></span>
+    </a>
+
+</nav>
+
+    <!-- Floating Action Button for Adding Assets (visible only on large screens) -->
+    <div class="add-asset-fab" data-bs-toggle="modal" data-bs-target="#addCoinModal">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <!-- Add Coin Modal -->
+    <div class="modal fade" id="addCoinModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title">Add Asset to Portfolio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCoinForm">
+                        <div class="mb-3 search-box">
+                            <label for="coinSearch" class="form-label">Search Asset</label>
+                            <input type="text" class="form-control" id="coinSearch" placeholder="Search by name or symbol (e.g., Bitcoin, BTC)">
+                            <div id="coinSearchResults"></div>
+                        </div>
+                        <div class="mb-4" id="selectedCoinDetails" style="display: none;">
+                            <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background-color: rgba(108, 99, 255, 0.1);">
+                                <img id="selectedCoinImage" src="" alt="Coin logo" class="coin-logo me-3">
+                                <div>
+                                    <div class="fw-bold fs-5 mb-1" id="selectedCoinName"></div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge-coin me-2" id="selectedCoinSymbol"></span>
+                                        <span id="selectedCoinPrice" class="text-muted"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="coinAmount" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="coinAmount" step="any" placeholder="0.00">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="purchasePrice" class="form-label">Purchase Price (USD)</label>
+                                <input type="number" class="form-control" id="purchasePrice" step="any" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="purchaseDate" class="form-label">Purchase Date</label>
+                            <input type="date" class="form-control" id="purchaseDate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" id="addCoinBtn" disabled>Add to Portfolio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let portfolio = JSON.parse(localStorage.getItem('cryptoPortfolio')) || [];
+        let cryptoList = [];
+        let selectedCoin = null;
+        let performanceChart = null;
+        let allocationChart = null;
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let historicalData = JSON.parse(localStorage.getItem('historicalData')) || {};
+        let currentView = 'performance'; // 'performance' or 'allocation'
+        
+        // Set initial theme
+        document.documentElement.setAttribute('data-bs-theme', currentTheme);
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply theme toggle functionality
+            const themeToggler = document.getElementById('themeToggler');
+            updateThemeIcon();
+            
+            themeToggler.addEventListener('click', () => {
+                currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-bs-theme', currentTheme);
+                localStorage.setItem('theme', currentTheme);
+                updateThemeIcon();
+                
+                // Update charts for theme consistency
+                if (performanceChart) {
+                    updatePerformanceChartTheme();
+                    performanceChart.update();
+                }
+                if (allocationChart) {
+                    updateAllocationChartTheme();
+                    allocationChart.update();
+                }
+            });
+            
+            // Initialize application
+            fetchCryptoList();
+            setupEventListeners();
+            renderPortfolio();
+            simulateHistoricalData();
+            initCharts();
+            
+            // Set current date as default for purchase date
+            document.getElementById('purchaseDate').valueAsDate = new Date();
+            
+            // Time period filter for performance chart
+            document.querySelectorAll('.time-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelector('.time-filter.active').classList.remove('active');
+                    this.classList.add('active');
+                    updatePerformanceChart(this.dataset.period);
+                });
+            });
+            
+            // View toggle (performance/allocation)
+            document.getElementById('performanceToggle').addEventListener('click', function() {
+                if (currentView !== 'performance') {
+                    currentView = 'performance';
+                    updateViewToggle();
+                }
+            });
+            
+            document.getElementById('allocationToggle').addEventListener('click', function() {
+                if (currentView !== 'allocation') {
+                    currentView = 'allocation';
+                    updateViewToggle();
+                }
+            });
+            
+            // Asset filter
+            document.getElementById('assetFilter').addEventListener('input', function() {
+                const filterText = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#portfolioTable tr');
+                
+                rows.forEach(row => {
+                    const assetName = row.querySelector('.asset-name')?.textContent.toLowerCase() || '';
+                    const assetSymbol = row.querySelector('.asset-symbol')?.textContent.toLowerCase() || '';
+                    
+                    if (assetName.includes(filterText) || assetSymbol.includes(filterText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Update view toggle (performance/allocation)
+        function updateViewToggle() {
+            // Update toggle buttons
+            document.getElementById('performanceToggle').classList.toggle('active', currentView === 'performance');
+            document.getElementById('allocationToggle').classList.toggle('active', currentView === 'allocation');
+            
+            // Update header label
+            document.getElementById('portfolioLabel').textContent = 
+                currentView === 'performance' ? 'Total Portfolio Value' : 'Asset Allocation';
+            
+            // Show/hide performance info
+            document.getElementById('performanceInfo').style.display = 
+                currentView === 'performance' ? 'block' : 'none';
+            
+            // Update chart title
+            document.getElementById('chartTitle').textContent = 
+                currentView === 'performance' ? 'Portfolio Performance' : 'Asset Distribution';
+            
+            // Show/hide time filters
+            document.getElementById('timeFilters').style.display = 
+                currentView === 'performance' ? 'flex' : 'none';
+            
+            // Show/hide chart containers
+            document.getElementById('performanceChartContainer').style.display = 
+                currentView === 'performance' ? 'block' : 'none';
+            document.getElementById('allocationChartContainer').style.display = 
+                currentView === 'allocation' ? 'block' : 'none';
+        }
+        
+        function updateThemeIcon() {
+            const icon = document.querySelector('#themeToggler i');
+            if (currentTheme === 'dark') {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('coinSearch').addEventListener('input', searchCoin);
+            document.getElementById('addCoinBtn').addEventListener('click', addCoinToPortfolio);
+        }
+        
+        // Initialize charts
+        function initCharts() {
+            initPerformanceChart();
+            initAllocationChart();
+        }
+        
+        // Initialize performance chart
+        function initPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            // Get chart theme colors
+            const gridColor = currentTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = currentTheme === 'dark' ? '#f8f9fa' : '#212529';
+            
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [],
+                        borderColor: '#6c63ff',
+                        backgroundColor: 'rgba(108, 99, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: currentTheme === 'dark' ? '#2c2c2c' : 'white',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Value: $${context.raw.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor,
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            beginAtZero: false
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+            
+            // Initialize with 7d data
+            updatePerformanceChart('7d');
+        }
+
+        // Add this function to your JavaScript
+// Add this function to your JavaScript
+// Enhanced function to update chart for mobile view with clean annotations
+function updateChartForMobileView() {
+    const isMobile = window.innerWidth <= 768;
+    
+    if (performanceChart) {
+        // Simplified axis for mobile view
+        performanceChart.options.scales.x.display = !isMobile;
+        performanceChart.options.scales.y.display = !isMobile;
+        performanceChart.options.scales.y.grid.display = !isMobile;
+        
+        // Apply changes to chart
+        performanceChart.update();
+        
+        // Add annotations after chart is updated
+        addChartAnnotations();
+    }
+    
+    // Add mobile class to chart containers
+    document.querySelectorAll('.chart-container').forEach(container => {
+        if (isMobile) {
+            container.classList.add('chart-simplified');
+        } else {
+            container.classList.remove('chart-simplified');
+        }
+    });
+}
+
+// Improved function to add chart annotations with better positioning
+function addChartAnnotations() {
+    const isMobile = window.innerWidth <= 768;
+    
+    // Remove any existing annotations
+    document.querySelectorAll('.price-point, .threshold-line').forEach(el => el.remove());
+    
+    // Only add annotations on mobile
+    if (isMobile && performanceChart && performanceChart.data.datasets[0].data.length > 0) {
+        // Wait for chart render to complete
+        setTimeout(() => {
+            // Get the chart container
+            const chartContainer = document.querySelector('#performanceChartContainer');
+            if (!chartContainer) return;
+            
+            // Get data points and chart area
+            const dataPoints = performanceChart.data.datasets[0].data;
+            const chartArea = performanceChart.chartArea;
+            if (!chartArea) return;
+            
+            // Find highest and lowest values
+            const maxValue = Math.max(...dataPoints);
+            const minValue = Math.min(...dataPoints);
+            const startValue = dataPoints[0];
+            
+            // Find indices
+            const maxIndex = dataPoints.indexOf(maxValue);
+            const minIndex = dataPoints.indexOf(minValue);
+            
+            // Get positions from chart
+            const meta = performanceChart.getDatasetMeta(0);
+            
+            if (meta && meta.data && meta.data.length > 0) {
+                // Create highest point label (placed directly above the peak)
+                if (maxIndex >= 0 && maxIndex < meta.data.length) {
+                    const maxPoint = meta.data[maxIndex];
+                    const highLabel = document.createElement('div');
+                    highLabel.className = 'price-point';
+                    highLabel.textContent = '$' + maxValue.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                    highLabel.style.position = 'absolute';
+                    highLabel.style.left = maxPoint.x + 'px';
+                    
+                    // Position 20px above the peak point
+                    highLabel.style.top = (maxPoint.y - 20) + 'px';
+                    highLabel.style.textAlign = 'center';
+                    
+                    chartContainer.appendChild(highLabel);
+                }
+                
+                // Create lowest point label (placed directly below the valley)
+                if (minIndex >= 0 && minIndex < meta.data.length) {
+                    const minPoint = meta.data[minIndex];
+                    const lowLabel = document.createElement('div');
+                    lowLabel.className = 'price-point';
+                    lowLabel.textContent = '$' + minValue.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                    lowLabel.style.position = 'absolute';
+                    lowLabel.style.left = minPoint.x + 'px';
+                    
+                    // Position 20px below the valley point
+                    lowLabel.style.top = (minPoint.y + 20) + 'px';
+                    lowLabel.style.textAlign = 'center';
+                    
+                    chartContainer.appendChild(lowLabel);
+                }
+                
+                // Create threshold line at starting value
+                const thresholdY = performanceChart.scales.y.getPixelForValue(startValue);
+                if (thresholdY >= chartArea.top && thresholdY <= chartArea.bottom) {
+                    const thresholdLine = document.createElement('div');
+                    thresholdLine.className = 'threshold-line';
+                    thresholdLine.style.position = 'absolute';
+                    thresholdLine.style.top = thresholdY + 'px';
+                    thresholdLine.style.width = (chartArea.right - chartArea.left) + 'px';
+                    thresholdLine.style.left = chartArea.left + 'px';
+                    chartContainer.appendChild(thresholdLine);
+                }
+            }
+        }, 100); // Delay to ensure chart is fully rendered
+    }
+}
+
+// Update this function to call addChartAnnotations whenever the chart data changes
+function updatePerformanceChart(period) {
+    if (!historicalData || !historicalData[period]) return;
+    
+    const chartData = historicalData[period];
+    performanceChart.data.labels = chartData.labels;
+    performanceChart.data.datasets[0].data = chartData.values;
+    
+    // Calculate min and max for better y-axis scaling
+    const min = Math.min(...chartData.values) * 0.95;
+    const max = Math.max(...chartData.values) * 1.05;
+    
+    performanceChart.options.scales.y.suggestedMin = min;
+    performanceChart.options.scales.y.suggestedMax = max;
+    
+    performanceChart.update();
+    
+    // Update portfolio summary with period-specific change
+    updatePortfolioSummaryForPeriod(period);
+    
+    // Add annotations after chart update
+    addChartAnnotations();
+}
+
+// Make sure to attach event listeners
+window.addEventListener('resize', updateChartForMobileView);
+window.addEventListener('orientationchange', updateChartForMobileView);
+
+// Also update annotations when theme changes
+function updatePerformanceChartTheme() {
+    const gridColor = currentTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+    const textColor = currentTheme === 'dark' ? '#f8f9fa' : '#212529';
+    
+    performanceChart.options.scales.x.ticks.color = textColor;
+    performanceChart.options.scales.y.ticks.color = textColor;
+    performanceChart.options.scales.y.grid.color = gridColor;
+    
+    performanceChart.options.plugins.tooltip.backgroundColor = currentTheme === 'dark' ? '#2c2c2c' : 'white';
+    performanceChart.options.plugins.tooltip.titleColor = textColor;
+    performanceChart.options.plugins.tooltip.bodyColor = textColor;
+    performanceChart.options.plugins.tooltip.borderColor = gridColor;
+    
+    // After theme update, refresh annotations
+    addChartAnnotations();
+}
+
+// Call this function during initialization and window resize
+window.addEventListener('resize', updateChartForMobileView);
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to your existing DOMContentLoaded event
+    updateChartForMobileView();
+});
+
+// Call this function during initialization and window resize
+window.addEventListener('resize', updateChartForMobileView);
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to your existing DOMContentLoaded event
+    updateChartForMobileView();
+});
+        
+        // Update performance chart theme
+        function updatePerformanceChartTheme() {
+            const gridColor = currentTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = currentTheme === 'dark' ? '#f8f9fa' : '#212529';
+            
+            performanceChart.options.scales.x.ticks.color = textColor;
+            performanceChart.options.scales.y.ticks.color = textColor;
+            performanceChart.options.scales.y.grid.color = gridColor;
+            
+            performanceChart.options.plugins.tooltip.backgroundColor = currentTheme === 'dark' ? '#2c2c2c' : 'white';
+            performanceChart.options.plugins.tooltip.titleColor = textColor;
+            performanceChart.options.plugins.tooltip.bodyColor = textColor;
+            performanceChart.options.plugins.tooltip.borderColor = gridColor;
+        }
+        
+        // Update performance chart with data for selected time period
+        function updatePerformanceChart(period) {
+            if (!historicalData || !historicalData[period]) return;
+            
+            const chartData = historicalData[period];
+            performanceChart.data.labels = chartData.labels;
+            performanceChart.data.datasets[0].data = chartData.values;
+            
+            // Calculate min and max for better y-axis scaling
+            const min = Math.min(...chartData.values) * 0.95;
+            const max = Math.max(...chartData.values) * 1.05;
+            
+            performanceChart.options.scales.y.suggestedMin = min;
+            performanceChart.options.scales.y.suggestedMax = max;
+            
+            performanceChart.update();
+            
+            // Update portfolio summary with period-specific change
+            updatePortfolioSummaryForPeriod(period);
+            
+            // Add annotations after chart update
+            addChartAnnotations();
+        }
+        
+        // Initialize allocation chart
+        function initAllocationChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+            
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [],
+                        borderWidth: 2,
+                        borderColor: currentTheme === 'dark' ? '#1e1e1e' : '#ffffff',
+                        hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: currentTheme === 'dark' ? '#2c2c2c' : 'white',
+                            titleColor: currentTheme === 'dark' ? '#f8f9fa' : '#212529',
+                            bodyColor: currentTheme === 'dark' ? '#f8f9fa' : '#212529',
+                            borderColor: currentTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${percentage}% ($${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            updateAllocationChart();
+        }
+        
+        // Update allocation chart theme
+        function updateAllocationChartTheme() {
+            allocationChart.data.datasets[0].borderColor = currentTheme === 'dark' ? '#1e1e1e' : '#ffffff';
+            
+            allocationChart.options.plugins.tooltip.backgroundColor = currentTheme === 'dark' ? '#2c2c2c' : 'white';
+            allocationChart.options.plugins.tooltip.titleColor = currentTheme === 'dark' ? '#f8f9fa' : '#212529';
+            allocationChart.options.plugins.tooltip.bodyColor = currentTheme === 'dark' ? '#f8f9fa' : '#212529';
+            allocationChart.options.plugins.tooltip.borderColor = currentTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        }
+        
+        // Update allocation chart with current portfolio data
+        function updateAllocationChart() {
+            if (portfolio.length === 0) {
+                allocationChart.data.labels = ['No Assets'];
+                allocationChart.data.datasets[0].data = [100];
+                allocationChart.data.datasets[0].backgroundColor = ['#e9ecef'];
+                allocationChart.update();
+                
+                document.getElementById('allocationLegend').innerHTML = `
+                    <div class="empty-state">
+                        <div class="text-muted">No assets in portfolio</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get labels and data
+            const sortedPortfolio = [...portfolio].sort((a, b) => 
+                (b.amount * b.currentPrice) - (a.amount * a.currentPrice)
+            );
+            
+            // Take top 5 assets and group the rest as "Others"
+            let labels = [];
+            let data = [];
+            let colors = ['#6c63ff', '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'];
+            let legendHTML = '';
+            
+            let total = 0;
+            sortedPortfolio.forEach(coin => {
+                total += coin.amount * coin.currentPrice;
+            });
+            
+            if (sortedPortfolio.length <= 7) {
+                // Less than or equal to 7 coins, show all
+                labels = sortedPortfolio.map(coin => coin.name);
+                data = sortedPortfolio.map(coin => coin.amount * coin.currentPrice);
+                
+                // Generate legend
+                sortedPortfolio.forEach((coin, index) => {
+                    const percentage = ((coin.amount * coin.currentPrice / total) * 100).toFixed(1);
+                    legendHTML += `
+                        <div class="d-flex align-items-center justify-content-between py-2 px-2 rounded-3 mb-2" style="background-color: rgba(108, 99, 255, 0.05);">
+                            <div class="d-flex align-items-center">
+                                <div class="color-sample" style="background-color: ${colors[index]};"></div>
+                                <span>${coin.name}</span>
+                            </div>
+                            <span class="fw-medium">${percentage}%</span>
+                        </div>
+                    `;
+                });
+            } else {
+                // More than 7 coins, group the rest
+                const topCoins = sortedPortfolio.slice(0, 6);
+                labels = topCoins.map(coin => coin.name);
+                data = topCoins.map(coin => coin.amount * coin.currentPrice);
+                
+                // Add "Others" category
+                const otherCoins = sortedPortfolio.slice(6);
+                const otherValue = otherCoins.reduce((sum, coin) => sum + (coin.amount * coin.currentPrice), 0);
+                labels.push('Others');
+                data.push(otherValue);
+                
+                // Generate legend for top coins
+                topCoins.forEach((coin, index) => {
+                    const percentage = ((coin.amount * coin.currentPrice / total) * 100).toFixed(1);
+                    legendHTML += `
+                        <div class="d-flex align-items-center justify-content-between py-2 px-2 rounded-3 mb-2" style="background-color: rgba(108, 99, 255, 0.05);">
+                            <div class="d-flex align-items-center">
+                                <div class="color-sample" style="background-color: ${colors[index]};"></div>
+                                <span>${coin.name}</span>
+                            </div>
+                            <span class="fw-medium">${percentage}%</span>
+                        </div>
+                    `;
+                });
+                
+                // Add "Others" to legend
+                const othersPercentage = ((otherValue / total) * 100).toFixed(1);
+                legendHTML += `
+                    <div class="d-flex align-items-center justify-content-between py-2 px-2 rounded-3 mb-2" style="background-color: rgba(108, 99, 255, 0.05);">
+                        <div class="d-flex align-items-center">
+                            <div class="color-sample" style="background-color: ${colors[6]};"></div>
+                            <span>Others</span>
+                        </div>
+                        <span class="fw-medium">${othersPercentage}%</span>
+                    </div>
+                `;
+            }
+            
+            // Update chart
+            allocationChart.data.labels = labels;
+            allocationChart.data.datasets[0].data = data;
+            allocationChart.data.datasets[0].backgroundColor = colors.slice(0, labels.length);
+            allocationChart.update();
+            
+            // Update legend
+            document.getElementById('allocationLegend').innerHTML = legendHTML;
+        }
+        
+        // Simulate historical data for demo purposes
+        function simulateHistoricalData() {
+            const now = new Date();
+            const oneDay = 24 * 60 * 60 * 1000;
+            const oneWeek = 7 * oneDay;
+            const oneMonth = 30 * oneDay;
+            const threeMonths = 90 * oneDay;
+            const oneYear = 365 * oneDay;
+            
+            // Generate historical data for 1 year
+            const totalDays = 365;
+            let baseValue = portfolio.length ? portfolio.reduce((sum, coin) => sum + (coin.amount * coin.currentPrice), 0) : 10000;
+            if (baseValue < 1000) baseValue = 10000; // Ensure a reasonable starting value
+            
+            // Apply some random volatility
+            const volatility = 0.02; // 2% daily volatility
+            const upwardBias = 0.001; // Slight upward trend
+            
+            let simulatedData = [];
+            let currentValue = baseValue;
+            
+            // Create an array of simulated daily values
+            for (let i = totalDays; i >= 0; i--) {
+                const date = new Date(now.getTime() - (i * oneDay));
+                const randomChange = (Math.random() - 0.5) * volatility + upwardBias;
+                currentValue = currentValue * (1 + randomChange);
+                
+                simulatedData.push({
+                    date: date,
+                    value: currentValue
+                });
+            }
+            
+            // Create datasets for different time periods
+            const periods = {
+                '7d': { startDate: new Date(now.getTime() - oneWeek), interval: 1 },
+                '30d': { startDate: new Date(now.getTime() - oneMonth), interval: 1 },
+                '90d': { startDate: new Date(now.getTime() - threeMonths), interval: 3 },
+                '1y': { startDate: new Date(now.getTime() - oneYear), interval: 7 }
+            };
+            
+            const histData = {};
+            
+            Object.keys(periods).forEach(period => {
+                const { startDate, interval } = periods[period];
+                const filteredData = simulatedData.filter(item => item.date >= startDate);
+                
+                // Sample data based on interval to reduce points
+                const sampledData = [];
+                for (let i = 0; i < filteredData.length; i += interval) {
+                    sampledData.push(filteredData[i]);
+                }
+                
+                histData[period] = {
+                    labels: sampledData.map(item => formatDate(item.date, period)),
+                    values: sampledData.map(item => item.value),
+                    coinData: {} // Placeholder for coin-specific data
+                };
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('historicalData', JSON.stringify(histData));
+            historicalData = histData;
+        }
+        
+        // Format date for chart labels
+        function formatDate(date, period) {
+            const options = { month: 'short', day: 'numeric' };
+            if (period === '1y') {
+                options.month = 'short';
+                delete options.day;
+            }
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        // Fetch crypto list from API
+        async function fetchCryptoList() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1');
+                cryptoList = await response.json();
+                
+                // Also fetch some historical data for top coins
+                await fetchInitialHistoricalData();
+            } catch (error) {
+                console.error('Error fetching crypto list:', error);
+                alert('Failed to load cryptocurrency data. Please try again later.');
+            }
+        }
+        
+        // Fetch historical data for top cryptocurrencies
+        async function fetchInitialHistoricalData() {
+            try {
+                // Fetch historical data for top 20 coins (to have some initial data)
+                const topCoins = cryptoList.slice(0, 20);
+                const historicalDataObj = {};
+                
+                // Define time periods
+                const periods = {
+                    '7d': 7,
+                    '30d': 30,
+                    '90d': 90,
+                    '1y': 365
+                };
+                
+                // Create a placeholder structure for historical data
+                Object.keys(periods).forEach(period => {
+                    historicalDataObj[period] = {
+                        coinData: {},
+                        labels: [],
+                        values: []
+                    };
+                    
+                    // Create date labels
+                    const days = periods[period];
+                    const labels = [];
+                    const now = new Date();
+                    
+                    for (let i = days; i >= 0; i--) {
+                        const date = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000));
+                        labels.push(formatDate(date, period));
+                    }
+                    
+                    historicalDataObj[period].labels = labels;
+                });
+                
+                // Save empty structure to localStorage
+                localStorage.setItem('historicalData', JSON.stringify(historicalDataObj));
+                historicalData = historicalDataObj;
+                
+                // Fetch real historical data for Bitcoin as a baseline
+                const btcData = await fetchCoinHistoricalData('bitcoin', '1y');
+                
+                if (btcData) {
+                    // Use Bitcoin data for normalization
+                    Object.keys(periods).forEach(period => {
+                        const days = periods[period];
+                        // Take most recent 'days' data points and reverse for chronological order
+                        const periodData = btcData.prices.slice(-days-1).map(item => item[1]);
+                        historicalData[period].coinData['bitcoin'] = periodData;
+                    });
+                    
+                    localStorage.setItem('historicalData', JSON.stringify(historicalData));
+                }
+            } catch (error) {
+                console.error('Error fetching initial historical data:', error);
+            }
+        }
+        
+        // Fetch historical market data for a specific coin
+        async function fetchCoinHistoricalData(coinId, period) {
+            try {
+                // Map period to days
+                const days = period === '7d' ? 7 : period === '30d' ? 30 : period === '90d' ? 90 : 365;
+                
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`);
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching historical data for ${coinId}:`, error);
+                return null;
+            }
+        }
+        
+        // Update historical data based on current portfolio
+        async function updateHistoricalData() {
+            if (portfolio.length === 0) {
+                // If portfolio is empty, generate some placeholder data
+                simulateHistoricalData();
+                return;
+            }
+            
+            try {
+                const fetchPromises = [];
+                
+                // Fetch historical data for each coin in portfolio
+                portfolio.forEach(coin => {
+                    fetchPromises.push(fetchCoinHistoricalData(coin.id, '1y'));
+                });
+                
+                const results = await Promise.allSettled(fetchPromises);
+                
+                // Define time periods
+                const periods = {
+                    '7d': 7,
+                    '30d': 30,
+                    '90d': 90,
+                    '1y': 365
+                };
+                
+                // Reset historical data structure
+                const newHistoricalData = {};
+                
+                Object.keys(periods).forEach(period => {
+                    const days = periods[period];
+                    newHistoricalData[period] = {
+                        coinData: {},
+                        labels: [],
+                        values: []
+                    };
+                    
+                    // Create date labels
+                    const labels = [];
+                    const now = new Date();
+                    
+                    for (let i = days; i >= 0; i--) {
+                        const date = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000));
+                        labels.push(formatDate(date, period));
+                    }
+                    
+                    newHistoricalData[period].labels = labels;
+                });
+                
+                // Process the results and update the historical data
+                results.forEach((result, index) => {
+                    if (result.status === 'fulfilled' && result.value) {
+                        const coin = portfolio[index];
+                        const coinData = result.value;
+                        
+                        // Store historical price data for each time period
+                        Object.keys(periods).forEach(period => {
+                            const days = periods[period];
+                            // Take most recent 'days' data points
+                            const periodPrices = coinData.prices.slice(-days-1).map(item => item[1]);
+                            newHistoricalData[period].coinData[coin.id] = periodPrices;
+                        });
+                    }
+                });
+                
+                // Calculate portfolio value for each day in each period
+                Object.keys(periods).forEach(period => {
+                    const periodData = newHistoricalData[period];
+                    const days = periods[period];
+                    
+                    // Initialize array for total values
+                    const totalValues = new Array(days + 1).fill(0);
+                    
+                    // Calculate portfolio value for each day
+                    portfolio.forEach(coin => {
+                        const coinPrices = periodData.coinData[coin.id];
+                        
+                        if (coinPrices) {
+                            for (let i = 0; i < coinPrices.length; i++) {
+                                totalValues[i] += coin.amount * coinPrices[i];
+                            }
+                        }
+                    });
+                    
+                    periodData.values = totalValues;
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('historicalData', JSON.stringify(newHistoricalData));
+                historicalData = newHistoricalData;
+                
+                // Update charts
+                updatePerformanceChart(document.querySelector('.time-filter.active').dataset.period);
+            } catch (error) {
+                console.error('Error updating historical data:', error);
+                // Fallback to simulated data
+                simulateHistoricalData();
+            }
+        }
+        
+        // Search for coins
+        function searchCoin(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const resultsContainer = document.getElementById('coinSearchResults');
+            
+            if (searchTerm.length < 2) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            const matchedCoins = cryptoList.filter(coin => 
+                coin.name.toLowerCase().includes(searchTerm) || 
+                coin.symbol.toLowerCase().includes(searchTerm)
+            ).slice(0, 5);
+            
+            resultsContainer.innerHTML = '';
+            
+            matchedCoins.forEach(coin => {
+                const price = coin.current_price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 8});
+                const priceChange = coin.price_change_percentage_24h?.toFixed(2) || 0;
+                const changeClass = priceChange >= 0 ? 'change-positive' : 'change-negative';
+                const changeIcon = priceChange >= 0 ? 'fa-caret-up' : 'fa-caret-down';
+                
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <img src="${coin.image}" alt="${coin.name}" class="coin-logo me-2">
+                            <div>
+                                <div class="fw-medium">${coin.name}</div>
+                                <small class="text-muted">${coin.symbol.toUpperCase()}</small>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div>$${price}</div>
+                            <small class="${changeClass}">
+                                <i class="fas ${changeIcon}"></i> ${Math.abs(priceChange)}%
+                            </small>
+                        </div>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => selectCoin(coin));
+                resultsContainer.appendChild(item);
+            });
+        }
+        
+        // Select a coin from search results
+        function selectCoin(coin) {
+            selectedCoin = coin;
+            
+            // Format price for display
+            const formattedPrice = coin.current_price.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: coin.current_price < 1 ? 8 : 2
+            });
+            
+            // Update UI
+            document.getElementById('selectedCoinDetails').style.display = 'block';
+            document.getElementById('selectedCoinImage').src = coin.image;
+            document.getElementById('selectedCoinName').textContent = coin.name;
+            document.getElementById('selectedCoinSymbol').textContent = coin.symbol.toUpperCase();
+            document.getElementById('selectedCoinPrice').textContent = `$${formattedPrice}`;
+            document.getElementById('purchasePrice').value = coin.current_price;
+            
+            // Clear search results
+            document.getElementById('coinSearchResults').innerHTML = '';
+            document.getElementById('coinSearch').value = '';
+            
+            // Enable add button
+            document.getElementById('addCoinBtn').disabled = false;
+        }
+        
+        // Add a coin to the portfolio
+        function addCoinToPortfolio() {
+            const amount = parseFloat(document.getElementById('coinAmount').value);
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            
+            if (!selectedCoin || isNaN(amount) || amount <= 0 || isNaN(purchasePrice) || purchasePrice <= 0) {
+                alert('Please enter valid coin and amount information.');
+                return;
+            }
+            
+            // Check if coin already exists in portfolio
+            const existingCoinIndex = portfolio.findIndex(item => item.id === selectedCoin.id);
+            
+            if (existingCoinIndex !== -1) {
+                // Update existing entry
+                const existingCoin = portfolio[existingCoinIndex];
+                const totalInvestment = existingCoin.amount * existingCoin.purchasePrice + amount * purchasePrice;
+                const totalAmount = existingCoin.amount + amount;
+                existingCoin.purchasePrice = totalInvestment / totalAmount;
+                existingCoin.amount = totalAmount;
+                
+                // Update purchase history
+                if (!existingCoin.purchaseHistory) {
+                    existingCoin.purchaseHistory = [{
+                        date: purchaseDate || new Date().toISOString().split('T')[0],
+                        amount: existingCoin.amount,
+                        price: existingCoin.purchasePrice
+                    }];
+                }
+                
+                existingCoin.purchaseHistory.push({
+                    date: purchaseDate || new Date().toISOString().split('T')[0],
+                    amount: amount,
+                    price: purchasePrice
+                });
+            } else {
+                // Add new entry
+                portfolio.push({
+                    id: selectedCoin.id,
+                    name: selectedCoin.name,
+                    symbol: selectedCoin.symbol,
+                    image: selectedCoin.image,
+                    amount: amount,
+                    purchasePrice: purchasePrice,
+                    currentPrice: selectedCoin.current_price,
+                    priceChange24h: selectedCoin.price_change_percentage_24h || 0,
+                    purchaseHistory: [{
+                        date: purchaseDate || new Date().toISOString().split('T')[0],
+                        amount: amount,
+                        price: purchasePrice
+                    }]
+                });
+            }
+            
+            // Save to localStorage and update UI
+            savePortfolio();
+            renderPortfolio();
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addCoinModal'));
+            modal.hide();
+            
+            // Reset form
+            resetAddCoinForm();
+            
+            // Update historical data and charts
+            updateHistoricalData().then(() => {
+                updatePerformanceChart(document.querySelector('.time-filter.active').dataset.period);
+                updateAllocationChart();
+            });
+        }
+        
+        // Reset the add coin form
+        function resetAddCoinForm() {
+            document.getElementById('coinSearch').value = '';
+            document.getElementById('coinAmount').value = '';
+            document.getElementById('purchasePrice').value = '';
+            document.getElementById('selectedCoinDetails').style.display = 'none';
+            document.getElementById('addCoinBtn').disabled = true;
+            document.getElementById('purchaseDate').valueAsDate = new Date();
+            selectedCoin = null;
+        }
+        
+        // Remove a coin from the portfolio
+        function removeCoin(coinId) {
+            if (confirm('Are you sure you want to remove this asset from your portfolio?')) {
+                portfolio = portfolio.filter(coin => coin.id !== coinId);
+                savePortfolio();
+                renderPortfolio();
+                
+                // Update historical data and charts
+                updateHistoricalData().then(() => {
+                    updatePerformanceChart(document.querySelector('.time-filter.active').dataset.period);
+                    updateAllocationChart();
+                });
+            }
+        }
+        
+        // Save portfolio to localStorage
+        function savePortfolio() {
+            localStorage.setItem('cryptoPortfolio', JSON.stringify(portfolio));
+        }
+        
+        // Render portfolio table and summary
+        async function renderPortfolio() {
+            // Update asset count
+            document.getElementById('assetsCount').textContent = portfolio.length;
+            
+            if (portfolio.length === 0) {
+                document.getElementById('portfolioTable').innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="fas fa-coins"></i>
+                                <h5>Your portfolio is empty</h5>
+                                <p class="text-muted">Add your first asset to start tracking your investments</p>
+                                <button class="btn btn-primary rounded-pill px-4 mt-3" data-bs-toggle="modal" data-bs-target="#addCoinModal">
+                                    <i class="fas fa-plus me-2"></i>Add Asset
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                updatePortfolioSummary(0, 0, 0);
+                return;
+            }
+            
+            // Update current prices
+            await updateCurrentPrices();
+            
+            // Also update historical data with the latest portfolio
+            await updateHistoricalData();
+            
+            const tableBody = document.getElementById('portfolioTable');
+            tableBody.innerHTML = '';
+            
+            let totalValue = 0;
+            let totalInvestment = 0;
+            
+            portfolio.forEach(coin => {
+                const currentValue = coin.amount * coin.currentPrice;
+                const investmentValue = coin.amount * coin.purchasePrice;
+                const pnl = currentValue - investmentValue;
+                const pnlPercent = (pnl / investmentValue) * 100;
+                
+                totalValue += currentValue;
+                totalInvestment += investmentValue;
+                
+                // Format numbers for display
+                const formattedPrice = coin.currentPrice.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: coin.currentPrice < 1 ? 8 : 2
+                });
+                
+                const formattedPurchasePrice = coin.purchasePrice.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: coin.purchasePrice < 1 ? 8 : 2
+                });
+                
+                const formattedAmount = coin.amount.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 8
+                });
+                
+                const formattedValue = currentValue.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                const formattedPnl = pnl.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                // Create table row
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="${coin.image}" alt="${coin.name}" class="coin-logo me-3">
+                            <div>
+                                <div class="fw-medium asset-name">${coin.name}</div>
+                                <small class="text-muted asset-symbol">${coin.symbol.toUpperCase()}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>$${formattedPrice}</td>
+                    <td class="${coin.priceChange24h >= 0 ? 'change-positive' : 'change-negative'}">
+                        <i class="fas fa-${coin.priceChange24h >= 0 ? 'caret-up' : 'caret-down'} me-1"></i>
+                        ${Math.abs(coin.priceChange24h).toFixed(2)}%
+                    </td>
+                    <td>${formattedAmount}</td>
+                    <td>$${formattedPurchasePrice}</td>
+                    <td>$${formattedValue}</td>
+                    <td class="${pnl >= 0 ? 'change-positive' : 'change-negative'}">
+                        <div>$${formattedPnl}</div>
+                        <small>
+                            <i class="fas fa-${pnl >= 0 ? 'caret-up' : 'caret-down'} me-1"></i>
+                            ${Math.abs(pnlPercent).toFixed(2)}%
+                        </small>
+                    </td>
+                    <td>
+                        <div class="d-flex">
+                            <div class="action-icon me-2" title="Add more" onclick="addMoreCoin('${coin.id}')">
+                                <i class="fas fa-plus text-primary"></i>
+                            </div>
+                            <div class="action-icon me-2" title="Sell" onclick="sellCoin('${coin.id}')">
+                                <i class="fas fa-minus text-warning"></i>
+                            </div>
+                            <div class="action-icon" title="Remove" onclick="removeCoin('${coin.id}')">
+                                <i class="fas fa-trash text-danger"></i>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Update portfolio summary
+            const totalPnL = totalValue - totalInvestment;
+            const percentChange = totalInvestment > 0 ? (totalPnL / totalInvestment) * 100 : 0;
+            updatePortfolioSummary(totalValue, totalPnL, percentChange);
+            
+            // Update allocation chart
+            updateAllocationChart();
+        }
+        
+        // Update current prices from API
+        async function updateCurrentPrices() {
+            if (portfolio.length === 0) return;
+            
+            try {
+                const ids = portfolio.map(coin => coin.id).join(',');
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}`);
+                const priceData = await response.json();
+                
+                portfolio.forEach(coin => {
+                    const updatedCoin = priceData.find(item => item.id === coin.id);
+                    if (updatedCoin) {
+                        coin.currentPrice = updatedCoin.current_price;
+                        coin.priceChange24h = updatedCoin.price_change_percentage_24h || 0;
+                    }
+                });
+                
+                savePortfolio();
+            } catch (error) {
+                console.error('Error updating prices:', error);
+            }
+        }
+        
+        // Update portfolio summary display
+        function updatePortfolioSummary(totalValue, totalPnL, percentChange) {
+            // Format numbers
+            const formattedValue = totalValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2
+            });
+            
+            // Update total value
+            document.getElementById('totalValue').textContent = `$${formattedValue}`;
+            
+            if (currentView === 'performance') {
+                // Update value change indicator
+                const valueChangeElement = document.getElementById('totalValueChange');
+                const changeIcon = totalPnL >= 0 ? 'fa-caret-up' : 'fa-caret-down';
+                valueChangeElement.innerHTML = `
+                    <span class="${totalPnL >= 0 ? 'change-positive' : 'change-negative'} me-2">
+                        <i class="fas ${changeIcon} me-1"></i> ${Math.abs(percentChange).toFixed(2)}%
+                    </span>
+                    <span class="text-muted">vs purchase price</span>
+                `;
+            }
+        }
+        
+        // Update portfolio summary with period-specific change
+        function updatePortfolioSummaryForPeriod(period) {
+            if (!historicalData || !historicalData[period] || historicalData[period].values.length === 0) {
+                return;
+            }
+            
+            const values = historicalData[period].values;
+            const currentValue = values[values.length - 1];
+            const initialValue = values[0];
+            const change = currentValue - initialValue;
+            const percentChange = (change / initialValue) * 100;
+            
+            // Update value change indicator
+            const valueChangeElement = document.getElementById('totalValueChange');
+            const changeIcon = change >= 0 ? 'fa-caret-up' : 'fa-caret-down';
+            const timePeriodText = period === '7d' ? '7 days' : 
+                                  period === '30d' ? '30 days' : 
+                                  period === '90d' ? '90 days' : 
+                                  'last year';
+            
+            valueChangeElement.innerHTML = `
+                <span class="${change >= 0 ? 'change-positive' : 'change-negative'} me-2">
+                    <i class="fas ${changeIcon} me-1"></i> ${Math.abs(percentChange).toFixed(2)}%
+                </span>
+                <span class="text-muted">in ${timePeriodText}</span>
+            `;
+        }
+        
+        // Add more of a coin already in the portfolio
+        function addMoreCoin(coinId) {
+            const coin = portfolio.find(c => c.id === coinId);
+            if (!coin) return;
+            
+            // Create a modal to enter amount and price
+            const modalHtml = `
+                <div class="modal fade" id="addMoreModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title">Add more ${coin.name}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background-color: rgba(108, 99, 255, 0.1);">
+                                    <img src="${coin.image}" alt="${coin.name}" class="coin-logo me-3">
+                                    <div>
+                                        <div class="fw-bold fs-5 mb-1">${coin.name}</div>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge-coin me-2">${coin.symbol.toUpperCase()}</span>
+                                            <span class="text-muted">Current price: $${coin.currentPrice.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: coin.currentPrice < 1 ? 8 : 2
+                                            })}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form id="addMoreForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="additionalAmount" class="form-label">Additional Amount</label>
+                                            <input type="number" class="form-control" id="additionalAmount" step="any" placeholder="0.00" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="additionalPrice" class="form-label">Purchase Price (USD)</label>
+                                            <input type="number" class="form-control" id="additionalPrice" step="any" placeholder="0.00" value="${coin.currentPrice.toFixed(2)}" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="additionalDate" class="form-label">Purchase Date</label>
+                                        <input type="date" class="form-control" id="additionalDate" value="${new Date().toISOString().split('T')[0]}" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer border-0 pt-0">
+                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary rounded-pill px-4" id="confirmAddMore">Add to Portfolio</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('addMoreModal');
+            if (existingModal) existingModal.remove();
+            
+            // Add the modal to the document
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Show the modal
+            const addMoreModal = new bootstrap.Modal(document.getElementById('addMoreModal'));
+            addMoreModal.show();
+            
+            // Handle confirmation
+            document.getElementById('confirmAddMore').addEventListener('click', () => {
+                const additionalAmount = parseFloat(document.getElementById('additionalAmount').value);
+                const additionalPrice = parseFloat(document.getElementById('additionalPrice').value);
+                const additionalDate = document.getElementById('additionalDate').value;
+                
+                if (isNaN(additionalAmount) || additionalAmount <= 0 || isNaN(additionalPrice) || additionalPrice <= 0) {
+                    alert('Please enter valid amount and price.');
+                    return;
+                }
+                
+                // Update the coin in portfolio
+                const totalInvestment = coin.amount * coin.purchasePrice + additionalAmount * additionalPrice;
+                const totalAmount = coin.amount + additionalAmount;
+                coin.purchasePrice = totalInvestment / totalAmount;
+                coin.amount = totalAmount;
+                
+                // Update purchase history
+                if (!coin.purchaseHistory) {
+                    coin.purchaseHistory = [{
+                        date: additionalDate,
+                        amount: coin.amount,
+                        price: coin.purchasePrice
+                    }];
+                } else {
+                    coin.purchaseHistory.push({
+                        date: additionalDate,
+                        amount: additionalAmount,
+                        price: additionalPrice
+                    });
+                }
+                
+                // Save to localStorage and update UI
+                savePortfolio();
+                renderPortfolio();
+                
+                // Update charts
+                updateHistoricalData().then(() => {
+                    updatePerformanceChart(document.querySelector('.time-filter.active').dataset.period);
+                    updateAllocationChart();
+                });
+                
+                // Close the modal
+                addMoreModal.hide();
+            });
+        }
+        
+        // Sell part of an existing coin
+        function sellCoin(coinId) {
+            const coin = portfolio.find(c => c.id === coinId);
+            if (!coin) return;
+            
+            // Create a modal to enter sell amount and price
+            const modalHtml = `
+                <div class="modal fade" id="sellCoinModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title">Sell ${coin.name}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background-color: rgba(108, 99, 255, 0.1);">
+                                    <img src="${coin.image}" alt="${coin.name}" class="coin-logo me-3">
+                                    <div>
+                                        <div class="fw-bold fs-5 mb-1">${coin.name}</div>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge-coin me-2">${coin.symbol.toUpperCase()}</span>
+                                            <span class="text-muted">Current price: $${coin.currentPrice.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: coin.currentPrice < 1 ? 8 : 2
+                                            })}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info mb-3">
+                                    <small>You currently own ${coin.amount.toLocaleString(undefined, {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 8
+                                    })} ${coin.symbol.toUpperCase()}</small>
+                                </div>
+                                <form id="sellCoinForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="sellAmount" class="form-label">Amount to Sell</label>
+                                            <input type="number" class="form-control" id="sellAmount" step="any" 
+                                              max="${coin.amount}" placeholder="0.00" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="sellPrice" class="form-label">Sell Price (USD)</label>
+                                            <input type="number" class="form-control" id="sellPrice" step="any" 
+                                              placeholder="0.00" value="${coin.currentPrice.toFixed(2)}" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sellDate" class="form-label">Sell Date</label>
+                                        <input type="date" class="form-control" id="sellDate" 
+                                          value="${new Date().toISOString().split('T')[0]}" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer border-0 pt-0">
+                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-warning rounded-pill px-4" id="confirmSell">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('sellCoinModal');
+            if (existingModal) existingModal.remove();
+            
+            // Add the modal to the document
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Show the modal
+            const sellCoinModal = new bootstrap.Modal(document.getElementById('sellCoinModal'));
+            sellCoinModal.show();
+            
+            // Add validation for sell amount
+            const sellAmountInput = document.getElementById('sellAmount');
+            sellAmountInput.addEventListener('input', function() {
+                const sellAmount = parseFloat(this.value);
+                if (sellAmount > coin.amount) {
+                    this.setCustomValidity(`You can't sell more than ${coin.amount} ${coin.symbol.toUpperCase()}`);
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+            
+            // Handle confirmation
+            document.getElementById('confirmSell').addEventListener('click', () => {
+                const sellAmount = parseFloat(document.getElementById('sellAmount').value);
+                const sellPrice = parseFloat(document.getElementById('sellPrice').value);
+                const sellDate = document.getElementById('sellDate').value;
+                
+                if (isNaN(sellAmount) || sellAmount <= 0 || isNaN(sellPrice) || sellPrice <= 0) {
+                    alert('Please enter valid amount and price.');
+                    return;
+                }
+                
+                if (sellAmount > coin.amount) {
+                    alert(`You can't sell more than ${coin.amount} ${coin.symbol.toUpperCase()}`);
+                    return;
+                }
+                
+                // If selling all, remove the coin
+                if (sellAmount === coin.amount) {
+                    portfolio = portfolio.filter(c => c.id !== coinId);
+                } else {
+                    // Otherwise, update the coin in portfolio
+                    coin.amount -= sellAmount;
+                    
+                    // Add to sell history if it exists, otherwise create it
+                    if (!coin.sellHistory) {
+                        coin.sellHistory = [];
+                    }
+                    
+                    coin.sellHistory.push({
+                        date: sellDate,
+                        amount: sellAmount,
+                        price: sellPrice
+                    });
+                }
+                
+                // Save to localStorage and update UI
+                savePortfolio();
+                renderPortfolio();
+                
+                // Update charts
+                updateHistoricalData().then(() => {
+                    updatePerformanceChart(document.querySelector('.time-filter.active').dataset.period);
+                    updateAllocationChart();
+                });
+                
+                // Close the modal
+                sellCoinModal.hide();
+            });
+        }
+        
+        // Make functions available globally
+        window.removeCoin = removeCoin;
+        window.addMoreCoin = addMoreCoin;
+        window.sellCoin = sellCoin;
+    </script>
 </body>
 </html>
