@@ -113,11 +113,11 @@ monitoring
     <div class="container">
         <div class="button-container">
             <button class="BTC">
-                Total Market Cap
+                MCap
                 <span id="total-market-cap">Loading...</span>
             </button>
             <button class="ETH">
-                24h Volume
+                24h Vol
                 <span id="total-volume">Loading...</span>
             </button>
             <button class="efud">
@@ -129,7 +129,7 @@ monitoring
                 <span id="funding-rate">Loading...</span>
             </button>
             <button class="btc">
-                BTC Dominance
+                BTC DOM
                 <span id="btc-dominance">Loading...</span>
             </button>
             <button class="fear-greed" id="fear-greed-button">
@@ -1551,9 +1551,11 @@ body.dark-theme .bottom-navigation .nav-label {
         }
     /* Add this to your existing <style> section */
 
-/* Updated media query for small screens (≤ 768px) with better centering */
+/* ...existing code... */
+
+/* Updated media query for small screens (≤ 768px) with better button layout */
 @media (max-width: 768px) {
-    /* Hide ETH funding rate button */
+    /* Only hide ETH and BTC funding rate buttons */
     .button-container > button.efud {
         display: none;
     }
@@ -1563,77 +1565,73 @@ body.dark-theme .bottom-navigation .nav-label {
         display: none;
     }
     
-    /* Hide BTC dominance button */
+    /* Show BTC dominance button (remove the display: none) */
     .button-container > button.btc {
-        display: none;
+        display: block;
     }
     
-    /* Use flex column layout with proper centering */
+    /* Use flex layout with wrap for buttons */
     .button-container {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         gap: 12px;
-        width: 92%; /* Slightly wider for better appearance */
-        max-width: 400px; /* Limit width for better appearance */
+        width: 92%;
+        max-width: 400px;
         margin-left: auto;
         margin-right: auto;
-        align-items: center; /* Center horizontally */
     }
     
-    /* Make all buttons take full width of their container */
+    /* Override the column direction from other media queries */
+    .button-container {
+        flex-direction: row !important;
+        justify-content: space-between;
+    }
+    
+    /* Make all buttons take appropriate width */
     .button-container > button {
-        width: 100%; /* Full width of container */
-        max-width: 100%;
-        margin-left: 0;
-        margin-right: 0;
         box-sizing: border-box;
         min-height: 60px;
         height: auto;
+        margin: 0;
     }
     
-    /* Stack buttons vertically in order */
-    .button-container > button:nth-child(1) { 
-        order: 1; /* Market Cap */
+    /* First row: Market Cap and 24h Volume side by side */
+    .button-container > button.BTC,
+    .button-container > button.ETH {
+        width: calc(50% - 6px); /* Half width minus half the gap */
+        flex: 0 0 calc(50% - 6px);
+        min-width: 0; /* Allow buttons to shrink below content size if needed */
     }
     
-    .button-container > button:nth-child(2) { 
-        order: 2; /* 24h Volume */
+    /* Second row: Fear & Greed and BTC Dominance side by side */
+    .button-container > button.fear-greed,
+    .button-container > button.btc {
+        width: calc(50% - 6px); /* Half width minus half the gap */
+        flex: 0 0 calc(50% - 6px);
+        min-height: 80px;
+        margin-top: 0;
     }
     
-    .button-container > button.fear-greed { 
-        order: 3; /* Fear & Greed */
-        min-height: 80px; /* Taller for gauge */
-    }
-    
-    /* Stack panels vertically with full width */
-    .price-range-panel {
-        order: 4;
-        width: 100%;
-        margin: 12px 0 0 0;
-    }
-    
-    .open-interest-panel {
-        order: 5;
-        width: 100%;
-        margin: 12px 0 0 0;
-    }
-    
+    /* Panels get full width */
+    .price-range-panel,
+    .open-interest-panel,
     .long-short-panel {
-        order: 6;
         width: 100%;
         margin: 12px 0 0 0;
     }
     
-    /* Container needs better centering */
+    /* Adjust container */
     .container {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 15px 10px;
-        width: 80%;
+        width: 92%;
         box-sizing: border-box;
     }
 }
+
+/* ...existing code... */
 /* Improved market overview section alignment fixes */
 .market-overview-section {
     width: 92%;
