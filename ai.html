@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zenus - Crypto AI Assistant</title>
-    <!-- Add these scripts to the head section of your HTML -->
-    <script src="coins-data.js"></script>
-    <script src="ai-answer.js"></script>
+    <!-- Remove local script references -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <style>
         :root {
@@ -384,7 +382,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
 
         .user-status {
             font-size: 13px;
-            color: var(--text-light);
+            color: var (--text-light);
         }
 
         .menu-toggle {
@@ -716,7 +714,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
             border-radius: var(--card-radius);
             padding: 22px;
             margin-top: 16px;
-            border-left: 3px solid var(--primary-color);
+            border-left: 3px solid var (--primary-color);
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
         }
 
@@ -1681,8 +1679,37 @@ themeToggle.addEventListener('click', function() {
             const overlay = document.getElementById('overlay');
             const composeToggle = document.getElementById('compose-toggle');
             
-            // Flag to determine if we should use API or local responses
-            let useLocalResponses = false;
+            // Define constants for the ChatGPT API
+            const API_KEY = "sk-ia-general-5rTTgx6bx7cKb2ZBJq3RT3BlbkFJrXYTETMtSLMoXSjuElQl";
+            const API_URL = "https://api.openai.com/v1/chat/completions";
+
+            // Function to call ChatGPT API
+            async function callChatGPT(prompt) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: "gpt-3.5-turbo",
+                            messages: [{ role: "user", content: prompt }],
+                            temperature: 0.7
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.choices[0].message.content;
+                } catch (error) {
+                    console.error("Error querying ChatGPT API:", error);
+                    return "Sorry, I couldn't process your request.";
+                }
+            }
             
             // Mobile menu toggle
             menuToggle.addEventListener('click', function() {
@@ -1860,313 +1887,26 @@ composeToggle.addEventListener('click', function() {
                 // Show typing indicator
                 const typingId = showTypingIndicator();
                 
-                // Check if we should use local responses
-                if (useLocalResponses) {
-                    // Add a delay to simulate thinking
-                    setTimeout(() => {
-                        hideTypingIndicator(typingId);
-                        
-                        // Get response from ai-answers.js
-                        const response = getAIResponse(message);
-                        addMessage(response, 'bot');
-                        addMessageToCurrentConversation(response, 'bot');
-                    }, 1000);
-                    return;
-                }
-                
-                // If not using local responses, try the API
                 try {
-                    // Check what kind of information user is requesting
-                    const isPriceQuery = /(?:price|worth|value|cost|how much|trading at)/i.test(message);
-                    const isMarketCapQuery = /(?:market ?cap|capitalization)/i.test(message);
-                    const isVolumeQuery = /(?:volume|trading volume|24h volume)/i.test(message);
-                    const isDominanceQuery = /(?:dominance|btc dominance|bitcoin dominance|market share)/i.test(message);
-                    const isGlobalMarketQuery = /(?:global|overall|entire|total) (?:market|crypto|cryptocurrency)/i.test(message);
+                    // Call ChatGPT API with the user message
+                    console.log("Sending prompt to ChatGPT:", message);
+                    const response = await callChatGPT(message);
+                    console.log("Received response from ChatGPT:", response);
                     
-                    // Extract the coin name using our expanded database
-                    const coinId = findCoinId(message);
-                    
-                    // If it's a typical crypto data query, try the API
-                    if (isPriceQuery || isMarketCapQuery || isVolumeQuery || isDominanceQuery || 
-                        isGlobalMarketQuery || coinId) {
-                        
-                        // Handle different types of queries
-                        if (isGlobalMarketQuery || (isMarketCapQuery && !coinId)) {
-                            // Global market data query
-                            const marketData = await fetchGlobalMarketData();
-                            hideTypingIndicator(typingId);
-                            
-                            if (marketData) {
-                                const btcDominance = marketData.marketCapPercentage.btc.toFixed(2);
-                                const ethDominance = marketData.marketCapPercentage.eth.toFixed(2);
-                                
-                                const marketCapChangeClass = marketData.marketCapChange >= 0 ? 'positive' : 'negative';
-                                const marketCapChangeSymbol = marketData.marketCapChange >= 0 ? '▲' : '▼';
-                                
-                                const responseHTML = `
-                                    Here's the current global cryptocurrency market overview:
-                                    
-                                    <div class="market-data">
-                                        <div class="market-header">Global Crypto Market</div>
-                                        <div class="market-details">
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">Total Market Cap</div>
-                                                <div class="detail-value">
-                                                    $${formatNumber(marketData.totalMarketCap)}
-                                                    <span class="value-change ${marketCapChangeClass}">
-                                                        ${marketCapChangeSymbol} ${Math.abs(marketData.marketCapChange).toFixed(2)}%
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">24h Trading Volume</div>
-                                                <div class="detail-value">$${formatNumber(marketData.totalVolume)}</div>
-                                            </div>
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">BTC Dominance</div>
-                                                <div class="detail-value">${btcDominance}%</div>
-                                            </div>
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">ETH Dominance</div>
-                                                <div class="detail-value">${ethDominance}%</div>
-                                            </div>
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">Active Cryptocurrencies</div>
-                                                <div class="detail-value">${marketData.activeCryptocurrencies.toLocaleString()}</div>
-                                            </div>
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">Active Markets</div>
-                                                <div class="detail-value">${marketData.markets.toLocaleString()}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    This data is sourced from CoinGecko API and represents the current state of the cryptocurrency market. Is there anything specific about this data you'd like to know more about?
-                                `;
-                                
-                                addMessageHTML(responseHTML, 'bot');
-                                addMessageToCurrentConversation(responseHTML, 'bot', true);
-                            } else {
-                                // Fallback to local response if API fails
-                                const response = getAIResponse(message);
-                                addMessage(response, 'bot');
-                                addMessageToCurrentConversation(response, 'bot');
-                            }
-                        } else if (isDominanceQuery) {
-                            // BTC dominance query
-                            const marketData = await fetchGlobalMarketData();
-                            hideTypingIndicator(typingId);
-                            
-                            if (marketData) {
-                                const btcDominance = marketData.marketCapPercentage.btc.toFixed(2);
-                                const ethDominance = marketData.marketCapPercentage.eth.toFixed(2);
-                                
-                                const responseHTML = `
-                                    Here's the current cryptocurrency market dominance:
-                                    
-                                    <div class="market-data">
-                                        <div class="market-header">Market Dominance</div>
-                                        <div class="market-details">
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">Bitcoin (BTC) Dominance</div>
-                                                <div class="detail-value">${btcDominance}%</div>
-                                            </div>
-                                            <div class="crypto-detail">
-                                                <div class="detail-label">Ethereum (ETH) Dominance</div>
-                                                <div class="detail-value">${ethDominance}%</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    Bitcoin currently represents ${btcDominance}% of the total cryptocurrency market capitalization. This metric shows Bitcoin's market value relative to the entire crypto market and is an important indicator of market sentiment and Bitcoin's influence on the overall market.
-                                `;
-                                
-                                addMessageHTML(responseHTML, 'bot');
-                                addMessageToCurrentConversation(responseHTML, 'bot', true);
-                            } else {
-                                // Fallback to local response if API fails
-                                const response = getAIResponse(message);
-                                addMessage(response, 'bot');
-                                addMessageToCurrentConversation(response, 'bot');
-                            }
-                        } else if (coinId) {
-                            // Specific coin query
-                            const cryptoData = await fetchCryptoData(coinId);
-                            hideTypingIndicator(typingId);
-                            
-                            if (cryptoData) {
-                                const priceChangeClass = cryptoData.priceChange24h >= 0 ? 'positive' : 'negative';
-                                const priceChangeSymbol = cryptoData.priceChange24h >= 0 ? '▲' : '▼';
-                                
-                                // Determine what specific data to highlight based on query type
-                                let responseHTML;
-                                
-                                if (isPriceQuery) {
-                                    responseHTML = `
-                                        The current price of ${cryptoData.name} (${cryptoData.symbol}) is:
-                                        
-                                        <div class="crypto-data">
-                                            <div class="crypto-header">
-                                                <img src="${cryptoData.image}" alt="${cryptoData.name}">
-                                                <span class="crypto-title">${cryptoData.name}</span>
-                                            </div>
-                                            <div class="crypto-details">
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Current Price</div>
-                                                    <div class="detail-value">
-                                                        $${cryptoData.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: cryptoData.price < 1 ? 6 : 2})}
-                                                        <span class="value-change ${priceChangeClass}">
-                                                            ${priceChangeSymbol} ${Math.abs(cryptoData.priceChange24h).toFixed(2)}%
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">24h High</div>
-                                                    <div class="detail-value">$${cryptoData.high24h.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: cryptoData.high24h < 1 ? 6 : 2})}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">24h Low</div>
-                                                    <div class="detail-value">$${cryptoData.low24h.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: cryptoData.low24h < 1 ? 6 : 2})}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                } else if (isMarketCapQuery) {
-                                    // Market cap query implementation
-                                    responseHTML = `
-                                        Here's the market capitalization data for ${cryptoData.name} (${cryptoData.symbol}):
-                                        
-                                        <div class="crypto-data">
-                                            <div class="crypto-header">
-                                                <img src="${cryptoData.image}" alt="${cryptoData.name}">
-                                                <span class="crypto-title">${cryptoData.name}</span>
-                                            </div>
-                                            <div class="crypto-details">
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Market Cap</div>
-                                                    <div class="detail-value">$${formatNumber(cryptoData.marketCap)}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Market Cap Rank</div>
-                                                    <div class="detail-value">#${cryptoData.marketCapRank}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Circulating Supply</div>
-                                                    <div class="detail-value">${formatNumber(cryptoData.circulatingSupply)} ${cryptoData.symbol}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                } else if (isVolumeQuery) {
-                                    // Volume query implementation
-                                    responseHTML = `
-                                        Here's the trading volume data for ${cryptoData.name} (${cryptoData.symbol}):
-                                        
-                                        <div class="crypto-data">
-                                            <div class="crypto-header">
-                                                <img src="${cryptoData.image}" alt="${cryptoData.name}">
-                                                <span class="crypto-title">${cryptoData.name}</span>
-                                            </div>
-                                            <div class="crypto-details">
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">24h Trading Volume</div>
-                                                    <div class="detail-value">$${formatNumber(cryptoData.volume24h)}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Volume/Market Cap</div>
-                                                    <div class="detail-value">${(cryptoData.volume24h / cryptoData.marketCap * 100).toFixed(2)}%</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Current Price</div>
-                                                    <div class="detail-value">
-                                                        $${cryptoData.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: cryptoData.price < 1 ? 6 : 2})}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                } else {
-                                    // General coin information
-                                    responseHTML = `
-                                        Here's the current data for ${cryptoData.name} (${cryptoData.symbol}):
-                                        
-                                        <div class="crypto-data">
-                                            <div class="crypto-header">
-                                                <img src="${cryptoData.image}" alt="${cryptoData.name}">
-                                                <span class="crypto-title">${cryptoData.name}</span>
-                                            </div>
-                                            <div class="crypto-details">
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Current Price</div>
-                                                    <div class="detail-value">
-                                                        $${cryptoData.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: cryptoData.price < 1 ? 6 : 2})}
-                                                        <span class="value-change ${priceChangeClass}">
-                                                            ${priceChangeSymbol} ${Math.abs(cryptoData.priceChange24h).toFixed(2)}%
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Market Cap</div>
-                                                    <div class="detail-value">$${formatNumber(cryptoData.marketCap)}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Market Cap Rank</div>
-                                                    <div class="detail-value">#${cryptoData.marketCapRank}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">24h Trading Volume</div>
-                                                    <div class="detail-value">$${formatNumber(cryptoData.volume24h)}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">24h High / Low</div>
-                                                    <div class="detail-value">$${cryptoData.high24h.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} / $${cryptoData.low24h.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
-                                                </div>
-                                                <div class="crypto-detail">
-                                                    <div class="detail-label">Circulating Supply</div>
-                                                    <div class="detail-value">${formatNumber(cryptoData.circulatingSupply)} ${cryptoData.symbol}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        This data is sourced from CoinGecko API and represents the current market conditions for ${cryptoData.name}.
-                                    `;
-                                }
-                                
-                                addMessageHTML(responseHTML, 'bot');
-                                addMessageToCurrentConversation(responseHTML, 'bot', true);
-                            } else {
-                                // Fallback to local response if API fails
-                                const response = getAIResponse(message);
-                                addMessage(response, 'bot');
-                                addMessageToCurrentConversation(response, 'bot');
-                            }
-                        } else {
-                            // Generic crypto query without specific coin
-                            hideTypingIndicator(typingId);
-                            
-                            // Use our ai-answers.js for a response
-                            const response = getAIResponse(message);
-                            addMessage(response, 'bot');
-                            addMessageToCurrentConversation(response, 'bot');
-                        }
-                    } else {
-                        // For non-crypto specific queries, use our ai-answers.js
-                        hideTypingIndicator(typingId);
-                        const response = getAIResponse(message);
-                        addMessage(response, 'bot');
-                        addMessageToCurrentConversation(response, 'bot');
-                    }
-                } catch (error) {
-                    console.error('Error processing message:', error);
+                    // Hide typing indicator
                     hideTypingIndicator(typingId);
                     
-                    // Fallback to local response if anything goes wrong
-                    const response = getAIResponse(message);
+                    // Display the response
                     addMessage(response, 'bot');
                     addMessageToCurrentConversation(response, 'bot');
+                } catch (error) {
+                    console.error("Error processing prompt:", error);
+                    hideTypingIndicator(typingId);
                     
-                    // Set flag to use local responses going forward
-                    useLocalResponses = true;
+                    // Display error message
+                    const errorMessage = "Sorry, I couldn't process your request. Please try again later.";
+                    addMessage(errorMessage, 'bot');
+                    addMessageToCurrentConversation(errorMessage, 'bot');
                 }
             }
             
