@@ -8,6 +8,7 @@
     <!-- Add these scripts to the head section of your HTML -->
     <script src="coins-data.js"></script>
     <script src="ai-answer.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <style>
         :root {
             /* Light mode (default) */
@@ -15,8 +16,8 @@
             --primary-hover: #2B6CB0;
             --bg-color: #FFFFFF;
             --sidebar-bg: #F8FAFC;
-            --text-color: #2D3748;
-            --text-light: #718096;
+            --text-color: #000000;
+            --text-light: #636c78;
             --border-color: #E2E8F0;
             --border-hover: #CBD5E0;
             --message-bot-bg: #F8FAFC;
@@ -44,6 +45,7 @@
             margin: 0;
             padding: 0;
         }
+        
 
         body {
             margin: 0;
@@ -59,7 +61,7 @@
         .sidebar {
             width: 240px;
             background-color: var(--sidebar-bg);
-            color: var(--text-color);
+            color: var(--primary-color);
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -141,6 +143,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
 /* Add this style to move the history items down - only on mobile */
 .history {
     flex: 1;
+    
     overflow-y: auto;
     padding: 20px 20px 20px; /* Original padding */
     margin-top: 0; /* Original margin */
@@ -162,7 +165,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     border-radius: var(--card-radius);
     cursor: pointer;
     font-size: 14px;
-    color: var (--text-color);
+    color: var (var(--primary-color));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -227,7 +230,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     /* Enhance user section */
     .user-section {
         padding: 22px; /* More padding */
-        margin-bottom: 10px; /* Add bottom margin */
+        margin-bottom: 55px; /* Add bottom margin */
         border-top: 1px solid var(--border-color);
     }
     
@@ -261,7 +264,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
             border: 1px solid var(--border-color);
             border-radius: var(--card-radius);
             background: var(--bg-color);
-            color: var(--text-color);
+            color: var(--primary-color);
             font-size: 15px;
             font-weight: 500;
             text-align: left;
@@ -306,7 +309,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
             border-radius: var(--card-radius);
             cursor: pointer;
             font-size: 14px;
-            color: var(--text-color);
+            color: var(--primary-color) !important;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -412,7 +415,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     padding: 10px;
     cursor: pointer;
     
-    color: var(--text-color); /* Changed from white to text-color (black) */
+    color: var(--primary-color); /* Changed from white to text-color (black) */
     transition: var(--transition);
 }
 
@@ -565,7 +568,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
         }
 
         .input-container {
-            border: 1px solid var(--border-color);
+            border: 1.5px solid var(--primary-color);
             border-radius: var(--card-radius);
             background: var(--bg-color);
             display: flex;
@@ -581,6 +584,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
         .input-area {
             padding: 24px 40px 32px;
             position: relative;
+            bottom: 55px;
             border-top: none; /* Remove the border line */
             background: var(--bg-color);
             text-align: center; /* Center the disclaimer text */
@@ -620,7 +624,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
             border: none;
             border-radius: 14px;
             cursor: pointer;
-            color: var(--text-color); /* Changed from white to text-color (black) */
+            color: var(--primary-color); /* Changed from white to text-color (black) */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -892,6 +896,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
 .dark-mode .welcome-screen img {
     box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1); /* White glow for logo in dark mode */
 }
+
             .overlay {
                 display: none;
                 position: fixed;
@@ -999,6 +1004,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
+
 .rename-input {
     position: absolute;
     left: 40px; /* Align with the beginning of the text */
@@ -1083,7 +1089,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    color: var(--text-color);
+    color: var(--primary-color);
     transition: var(--transition);
 }
 
@@ -1239,13 +1245,13 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    color: var(--text-color);
+    color: var(--primary-color);
     transition: var(--transition);
 }
 
 .home-button svg {
     stroke: var(--text-color);
-    stroke-width: 1.2;
+    stroke-width: 1.8;
 }
 
 .home-button:hover {
@@ -1347,6 +1353,101 @@ body.sidebar-hidden .home-button {
         overflow-x: hidden !important;
     }
 }
+/* Bottom Navigation */
+.bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    background-color: var(--text-color);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode .bottom-navigation {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Bottom Navigation Items */
+.bottom-navigation .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.8);
+    transition: color 0.3s ease, transform 0.3s ease;
+    flex: 1;
+    height: 100%;
+}
+
+body.dark-mode .bottom-navigation .nav-item {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.bottom-navigation .nav-item:hover {
+
+    transform: scale(1.1);
+}
+
+
+
+/* Bottom Navigation Icons */
+.bottom-navigation .material-symbols-outlined {
+    font-size: 27px;
+    transition: color 0.3s ease;
+}
+
+
+/* Zenus Icon */
+.bottom-navigation .zenus-icon {
+    width: 28px;
+    height: 22px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.bottom-navigation .nav-item:hover .zenus-icon {
+    transform: scale(1.2);
+}
+
+/* Navigation labels */
+.bottom-navigation .nav-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.8);
+    transition: color 0.3s ease;
+    margin-top: 2px;
+}
+
+body.dark-mode .bottom-navigation .nav-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Show the bottom navigation bar only on screens ≤ 768px */
+@media (max-width: 768px) {
+    .bottom-navigation {
+        display: flex;
+    }
+}
+
+/* Hide the bottom navigation bar on screens > 768px */
+@media (min-width: 769px) {
+    .bottom-navigation {
+        display: none;
+    }
+}
+
+
 
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1476,24 +1577,50 @@ body.sidebar-hidden .home-button {
             </div>
         </div>
         
+        
         <!-- Messages will be added here by JavaScript -->
     </div>
-    
+    <!-- Bottom Navigation Bar -->
+<nav class="bottom-navigation">
+    <a href="#home" class="nav-item">
+        <span class="material-symbols-outlined">home</span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="ai.html" class="nav-item">
+        <span class="nav-icon">
+            <img src="zenus.png" alt="Zenus" class="zenus-icon">
+        </span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="#charts" class="nav-item">
+        <span class="material-symbols-outlined">monitoring</span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="wallet.html" class="nav-item">
+        <span class="material-symbols-outlined">wallet</span>
+        <span class="nav-label"></span>
+    </a>
+    <a href="#profile" class="nav-item">
+        <span class="material-symbols-outlined">person</span>
+        <span class="nav-label"></span>
+    </a>
+</nav>
 
-    <div class="input-area">
-        <div class="input-container">
-            <textarea class="message-input" placeholder="Ask about crypto" id="message-input"></textarea>
-            <button class="send-button" id="send-button">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22 2L15 22L10 14L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                </svg>
-            </button>
-        </div>
-        <div class="disclaimer">
-            Zenus provides on-demand market data. Always verify information for investment decisions.
-        </div>
+<div class="input-area">
+    <div class="input-container">
+        <textarea class="message-input" placeholder="Ask about crypto" id="message-input"></textarea>
+        <button class="send-button" id="send-button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 2L15 22L10 14L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </button>
     </div>
 </div>
+
+
+    
+</div>
+
 
     <script>
 
