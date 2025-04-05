@@ -259,7 +259,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
         .new-chat-btn {
             margin: 20px;
             padding: 14px 18px;
-            border: 1px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--card-radius);
             background: var(--bg-color);
             color: var(--primary-color);
@@ -438,7 +438,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 0;
+            padding: 60px 0 90px; /* Increased bottom padding to account for fixed input */
             display: flex;
             flex-direction: column;
             scroll-behavior: smooth;
@@ -472,7 +472,7 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
 
         .welcome-screen p {
             font-size: 17px;
-            color: var(--text-light);
+            color: var (--text-light);
             max-width: 600px;
             margin-bottom: 40px;
             line-height: 1.6;
@@ -519,50 +519,73 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
         }
 
         .message {
-            padding: 24px 40px;
-            margin: 0;
+            padding: 16px 24px;
+            margin: 8px 12px;
             display: flex;
             position: relative;
+            border: none;
+            max-width: 85%;
+            border-radius: 18px;
         }
 
         .user-message {
-            background-color: var(--bg-color);
-            border-bottom: 1px solid var(--border-color);
+            margin-left: auto; /* Push to right side */
+            flex-direction: row-reverse; /* Reverse order: avatar on right, content on left */
+            background-color: rgba(0, 0, 0, 0.03); /* Light gray background */
+            border-radius: 18px 18px 0 18px; /* Rounded corners, pointed at bottom right */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
         }
 
         .bot-message {
-            background-color: var(--message-bot-bg);
-            border-bottom: 1px solid var(--border-color);
+            margin-right: auto; /* Push to left side */
+            background-color: var(--message-bot-bg); /* Use theme variable */
+            border-radius: 18px 18px 18px 0; /* Rounded corners, pointed at bottom left */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
         }
 
+        /* Dark mode styling for messages */
+.dark-mode .user-message {
+    background-color: rgba(255, 255, 255, 0.07); /* Slightly lighter in dark mode */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Stronger shadow in dark mode */
+}
+
+
+/* Add a subtle text shadow for better readability in dark mode */
+.dark-mode .message-content {
+    color: var(--text-color);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 20px;
             flex-shrink: 0;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.07);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
         }
 
-        .user-avatar {
-            background-color: #EBF8FF; /* Keep this as a fixed color */
-            color: var(--primary-color); /* Use variable for the text color */
+        .user-message .avatar {
+            margin-left: 12px; /* Space between content and avatar */
+            margin-right: 0;
         }
-        
-        .bot-avatar {
-            background-color: var(--primary-color); /* Use variable for background */
-            color: white; /* Keep this fixed for proper contrast */
+
+        .bot-message .avatar {
+            margin-right: 12px; /* Space between avatar and content */
+            margin-left: 0;
         }
 
         .message-content {
             flex: 1;
-            line-height: 1.7;
+            line-height: 1.6;
             font-size: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 0 5px;
         }
 
         .input-container {
@@ -1056,6 +1079,10 @@ body:not(.sidebar-hidden) .sidebar-toggle-large {
     .suggestions {
         display: none;
     }
+    .welcome-screen p {
+        display: none;
+    }
+    
     
     /* Adjust welcome screen spacing when suggestions are hidden */
     .welcome-screen h1 {
@@ -1444,8 +1471,425 @@ body.dark-mode .bottom-navigation .nav-label {
         display: none;
     }
 }
+/* File upload button styling with Material Icons - cleaner version */
+.file-upload-btn {
+    padding: 14px 15px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    margin-right: 5px;
+}
 
+.file-upload-btn .material-symbols-outlined {
+    font-size: 22px; /* Adjust icon size as needed */
+}
 
+/* Remove background on hover, just scale up slightly */
+.file-upload-btn:hover {
+    background: transparent;
+    transform: scale(1.1);
+}
+
+/* Keep consistent in dark mode too */
+.dark-mode .file-upload-btn:hover {
+    background: transparent;
+}
+
+/* File preview styling - cleaner version */
+.file-preview {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Remove file button - cleaner version */
+.file-preview .remove-file {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.file-preview .remove-file:hover {
+    background: transparent;
+    color: #E53E3E;
+    transform: scale(1.1);
+}
+
+/* Hide the actual file input */
+.file-input {
+    display: none;
+}
+
+/* Style for file preview */
+.file-preview {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.file-preview img {
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 6px;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.file-preview .file-info {
+    flex: 1;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.file-preview .file-name {
+    font-weight: 500;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-preview .file-size {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+.file-preview .remove-file {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.file-preview .remove-file:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #E53E3E;
+}
+
+/* Add animation for file upload */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.uploading .file-upload-btn {
+    animation: pulse 1.5s infinite;
+}
+
+/* ===== Voice Chat Button ===== */
+.voice-chat-btn {
+    padding: 14px 15px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    margin-right: 5px;
+    position: relative;
+}
+
+.voice-chat-btn .material-symbols-outlined {
+    font-size: 22px;
+    transition: color 0.3s ease;
+}
+
+.voice-chat-btn:hover {
+    background: transparent;
+    transform: scale(1.1);
+}
+
+.voice-chat-btn.recording .material-symbols-outlined {
+    color: #E53E3E;
+}
+
+/* ===== Centered Recording UI ===== */
+.centered-recording-ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.centered-recording-ui.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Recording popup container - full screen version */
+.recording-popup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    padding: 20px;
+}
+
+/* Recording waves container */
+.recording-waves-container {
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* Zenus logo in the center */
+.recording-logo {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .recording-logo {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.recording-logo img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+/* Sound circles animation */
+.sound-circles {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sound-circle {
+    position: absolute;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    opacity: 0.2;
+    transform: scale(0.5);
+    will-change: transform, opacity;
+    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+}
+
+/* Use theme text color for circles */
+.sound-circle {
+    border-color: var(--text-color);
+}
+
+.sound-circle:nth-child(1) {
+    width: 90%;
+    height: 90%;
+}
+
+.sound-circle:nth-child(2) {
+    width: 75%;
+    height: 75%;
+}
+
+.sound-circle:nth-child(3) {
+    width: 60%;
+    height: 60%;
+}
+
+.sound-circle:nth-child(4) {
+    width: 45%;
+    height: 45%;
+}
+
+.sound-circle:nth-child(5) {
+    width: 30%;
+    height: 30%;
+}
+
+/* Dark mode adjustments - white circles */
+.dark-mode .sound-circle {
+    opacity: 0.3;
+    border-color: white;
+}
+
+/* Recording text */
+.recording-text {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 40px;
+    text-align: center;
+    min-height: 70px;
+    max-width: 80%;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+}
+
+/* Recording actions */
+.recording-actions {
+    margin-bottom: 30px;
+}
+
+/* Stop recording button */
+.stop-recording-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background-color: #E53E3E;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+}
+
+.stop-recording-btn:hover {
+    transform: scale(1.1);
+    background-color: #C53030;
+    box-shadow: 0 6px 20px rgba(229, 62, 62, 0.5);
+}
+
+.stop-recording-btn .material-symbols-outlined {
+    font-size: 40px;
+}
+
+/* Tap instruction */
+.tap-instruction {
+    font-size: 16px;
+    color: var(--text-light);
+    margin-top: 20px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    .recording-waves-container {
+        height: 180px;
+    }
+    
+    .sound-circles {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .recording-logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .recording-logo img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .recording-text {
+        font-size: 20px;
+        min-height: 60px;
+        margin-bottom: 30px;
+    }
+    
+    .stop-recording-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .stop-recording-btn .material-symbols-outlined {
+        font-size: 36px;
+    }
+    
+    .tap-instruction {
+        font-size: 14px;
+    }
+}
+
+/* Wave animation for recording button (mic icon) - small waves on the button itself */
+.sound-waves {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.voice-chat-btn.recording .sound-waves {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sound-wave {
+    width: 2px;
+    height: 10px;
+    background-color: #E53E3E;
+    margin: 0 1px;
+    border-radius: 1px;
+    transform-origin: center bottom;
+    animation: soundWaveAnimation 0.8s infinite ease-in-out;
+}
+
+.sound-wave:nth-child(1) { animation-delay: 0s; }
+.sound-wave:nth-child(2) { animation-delay: 0.1s; }
+.sound-wave:nth-child(3) { animation-delay: 0.2s; }
+.sound-wave:nth-child(4) { animation-delay: 0.1s; }
+.sound-wave:nth-child(5) { animation-delay: 0s; }
+
+@keyframes soundWaveAnimation {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1.2); }
+}
 
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1520,7 +1964,7 @@ body.dark-mode .bottom-navigation .nav-label {
     </div>
     <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="moon-icon">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 A7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="sun-icon">
             <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1554,23 +1998,23 @@ body.dark-mode .bottom-navigation .nav-label {
         <div class="welcome-screen" id="welcome-screen">
             <img src="zenus.png" alt="Zenus Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 120 120\'><rect width=\'120\' height=\'120\' rx=\'24\' fill=\'%233182CE\'/><text x=\'50%\' y=\'50%\' font-family=\'Arial\' font-size=\'60\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\' fill=\'white\'>Z</text></svg>'">
             <h1>Welcome to Zenus</h1>
-            <p>Your cryptocurrency assistant with accurate market data</p>
+            <p>Trending Crypto Topics</p>
             <div class="suggestions">
                 <div class="suggestion">
-                    <h3>Price Information</h3>
-                    <p>What is the current price of Bitcoin?</p>
+                    <h3>What is Blockchain? </h3>
+                    <p>Learn the basics of blockchain technology</p>
                 </div>
                 <div class="suggestion">
-                    <h3>Market Overview</h3>
-                    <p>Show me the current crypto market cap</p>
+                    <h3>What is DeFi?</h3>
+                    <p>Discover decentralized finance</p>
                 </div>
                 <div class="suggestion">
-                    <h3>Alternative Coins</h3>
-                    <p>What is the price of Chainlink?</p>
+                    <h3>What is Bitcoin?</h3>
+                    <p>Understand Bitcoin’s role and value</p>
                 </div>
                 <div class="suggestion">
-                    <h3>Trading Volume</h3>
-                    <p>What's the 24h trading volume for Avalanche?</p>
+                    <h3>What is Mining?</h3>
+                    <p>FExplore how crypto mining works</p>
                 </div>
             </div>
         </div>
@@ -1606,12 +2050,55 @@ body.dark-mode .bottom-navigation .nav-label {
 
 <div class="input-area">
     <div class="input-container">
+        <!-- Replace the SVG with the Google Material Symbols icon for file attachment -->
+        <button class="file-upload-btn" id="file-upload-btn" title="Upload image">
+            <span class="material-symbols-outlined">attach_file</span>
+        </button>
+        <button class="voice-chat-btn" id="voice-chat-btn" title="Voice message">
+            <span class="material-symbols-outlined">mic</span>
+            <div class="sound-waves">
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+            </div>
+        </button>
+        <input type="file" id="file-input" class="file-input" accept="image/*">
         <textarea class="message-input" placeholder="Ask about crypto" id="message-input"></textarea>
         <button class="send-button" id="send-button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22 2L15 22L10 14L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </svg>
         </button>
+    </div>
+    <!-- File preview will appear here -->
+    <div id="file-preview-container"></div>
+</div>
+</div>
+<!-- Replace the current recording-popup that's floating outside the centered-recording-ui with this: -->
+<!-- Centered recording UI -->
+<div class="centered-recording-ui" id="centered-recording-ui">
+    <div class="recording-popup">
+        <div class="recording-waves-container">
+            <div class="sound-circles">
+                <div class="sound-circle"></div>
+                <div class="sound-circle"></div>
+                <div class="sound-circle"></div>
+                <div class="sound-circle"></div>
+                <div class="sound-circle"></div>
+            </div>
+            <div class="recording-logo">
+                <img src="zenus.png" alt="Zenus" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 120 120\'><rect width=\'120\' height=\'120\' rx=\'24\' fill=\'%233182CE\'/><text x=\'50%\' y=\'50%\' font-family=\'Arial\' font-size=\'60\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\' fill=\'white\'>Z</text></svg>'">
+            </div>
+        </div>
+        <div class="recording-text">Listening...</div>
+        <div class="recording-actions">
+            <button class="stop-recording-btn" id="stop-recording-btn">
+                <span class="material-symbols-outlined">stop_circle</span>
+            </button>
+        </div>
+        <div class="tap-instruction">Tap anywhere to stop</div>
     </div>
 </div>
 
@@ -1622,6 +2109,254 @@ body.dark-mode .bottom-navigation .nav-label {
 
     <script>
 
+// Voice chat functionality with audio visualization
+const voiceChatBtn = document.getElementById('voice-chat-btn');
+const centeredRecordingUI = document.getElementById('centered-recording-ui');
+const stopRecordingBtn = document.getElementById('stop-recording-btn');
+const messageInput = document.getElementById('message-input');
+const welcomeScreen = document.getElementById('welcome-screen');
+
+let recognition = null;
+let isRecording = false;
+let audioContext = null;
+let analyser = null;
+let microphone = null;
+let animationId = null;
+
+// Initialize speech recognition if supported
+function initSpeechRecognition() {
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        
+        // Configure recognition
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        
+        // Handle results
+        recognition.onresult = function(event) {
+            const transcript = Array.from(event.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join('');
+                
+            // Update the recording text with the recognized speech
+            document.querySelector('.recording-text').textContent = transcript;
+                
+            // Update the input field with the recognized text
+            messageInput.value = transcript;
+            
+            // Adjust input height
+            messageInput.style.height = 'auto';
+            messageInput.style.height = (messageInput.scrollHeight) + 'px';
+        };
+        
+        // Handle end of recognition - restart if we're still recording
+        recognition.onend = function() {
+            if (isRecording) {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.error('Error restarting speech recognition:', e);
+                    stopRecording();
+                }
+            }
+        };
+        
+        // Handle errors
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                stopRecording();
+            }
+        };
+        
+        return true;
+    } else {
+        console.warn('Speech recognition not supported in this browser');
+        return false;
+    }
+}
+
+// Initialize audio context for visualization
+function initAudioVisualization() {
+    if (!audioContext) {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.8;
+            
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(stream => {
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    visualize();
+                })
+                .catch(err => {
+                    console.error('Error accessing microphone:', err);
+                });
+        } catch (e) {
+            console.error('Web Audio API not supported:', e);
+        }
+    }
+}
+
+// Visualize audio data
+// Visualize audio data with circular animation
+function visualize() {
+    if (!isRecording) return;
+    
+    const soundCircles = document.querySelectorAll('.sound-circle');
+    if (!analyser || soundCircles.length === 0) return;
+    
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(dataArray);
+    
+    // Calculate average volume from frequency data
+    let sum = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i];
+    }
+    
+    const average = sum / dataArray.length;
+    
+    // Base scale factor when no sound - 0.5 (50% of original size)
+    let baseScale = 0.5;
+    
+    // If volume is above threshold, increase the scale
+    if (average > 5) {
+        // Map average (0-255) to additional scale (0-0.9)
+        // This gives us a range of 0.5 to 1.4 total scale
+        const additionalScale = (average / 255) * 0.9;
+        
+        // Animate each circle with different scales
+        soundCircles.forEach((circle, index) => {
+            // Calculate scale - outer circles scale more than inner ones
+            const multiplier = 1 + ((soundCircles.length - index - 1) * 0.15);
+            const scale = baseScale + (additionalScale * multiplier);
+            
+            // Apply scale transform
+            circle.style.transform = `scale(${scale})`;
+            
+            // Adjust opacity based on scale
+            const opacity = 0.1 + (additionalScale * 0.4);
+            circle.style.opacity = opacity.toFixed(2);
+        });
+    } else {
+        // If volume is below threshold, reset to base scale
+        soundCircles.forEach(circle => {
+            circle.style.transform = `scale(${baseScale})`;
+            circle.style.opacity = '0.2';
+        });
+    }
+    
+    animationId = requestAnimationFrame(visualize);
+}
+
+// Start recording
+function startRecording() {
+    if (!recognition && !initSpeechRecognition()) {
+        alert('Speech recognition is not supported in your browser');
+        return;
+    }
+    
+    // Hide welcome screen
+    if (welcomeScreen) {
+        welcomeScreen.style.display = 'none';
+    }
+    
+    isRecording = true;
+    voiceChatBtn.classList.add('recording');
+    
+    // Reset recording text
+    document.querySelector('.recording-text').textContent = 'Listening...';
+    
+    // Reset wave bars to initial state
+    const waveBars = document.querySelectorAll('.wave-bar');
+    waveBars.forEach(bar => {
+        bar.style.transform = 'scaleY(0.3)';
+        bar.style.opacity = '0.3';
+    });
+    
+    // Show centered recording UI
+    centeredRecordingUI.classList.add('active');
+    
+    try {
+        // Start speech recognition
+        recognition.start();
+        
+        // Initialize audio visualization
+        initAudioVisualization();
+    } catch (e) {
+        console.error('Error starting recording:', e);
+        stopRecording();
+    }
+}
+
+// Stop recording
+function stopRecording() {
+    if (isRecording) {
+        isRecording = false;
+        voiceChatBtn.classList.remove('recording');
+        
+        // Hide centered recording UI
+        centeredRecordingUI.classList.remove('active');
+        
+        // Stop speech recognition
+        try {
+            recognition.stop();
+        } catch (e) {
+            console.error('Error stopping speech recognition:', e);
+        }
+        
+        // Stop audio visualization
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+        
+        // Disconnect microphone if connected
+        if (microphone) {
+            microphone.disconnect();
+            microphone = null;
+        }
+        
+        // If there's text in the input, send the message
+        if (messageInput.value.trim()) {
+            sendMessage();
+        }
+    }
+}
+
+// Toggle recording state
+function toggleRecording() {
+    if (isRecording) {
+        stopRecording();
+    } else {
+        startRecording();
+    }
+}
+
+// Add click event listener to voice chat button
+voiceChatBtn.addEventListener('click', toggleRecording);
+
+// Add click event listener to stop recording button
+stopRecordingBtn.addEventListener('click', stopRecording);
+
+// Add click event to centeredRecordingUI to stop when tapping anywhere
+centeredRecordingUI.addEventListener('click', function(e) {
+    // Only stop if clicking on the background (not the popup itself)
+    if (e.target === centeredRecordingUI) {
+        stopRecording();
+    }
+});
+
+// Initialize speech recognition on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initSpeechRecognition();
+});
         // Add this to your existing DOMContentLoaded event handler
         const homeButton = document.getElementById('home-button');
 
@@ -1684,32 +2419,43 @@ themeToggle.addEventListener('click', function() {
             const API_URL = "https://api.openai.com/v1/chat/completions";
 
             // Function to call ChatGPT API
-            async function callChatGPT(prompt) {
-                try {
-                    const response = await fetch(API_URL, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${API_KEY}`
-                        },
-                        body: JSON.stringify({
-                            model: "gpt-3.5-turbo",
-                            messages: [{ role: "user", content: prompt }],
-                            temperature: 0.7
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`API error: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    return data.choices[0].message.content;
-                } catch (error) {
-                    console.error("Error querying ChatGPT API:", error);
-                    return "Sorry, I couldn't process your request.";
-                }
-            }
+            // Function to call ChatGPT API with conversation history
+async function callChatGPT(conversationId) {
+    // Get the current conversation
+    const conversation = conversations.find(conv => conv.id === conversationId);
+    if (!conversation) return "Conversation not found";
+    
+    // Format messages for API - convert our internal format to OpenAI format
+    const apiMessages = conversation.messages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.content
+    }));
+    
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: apiMessages,
+                temperature: 0.7
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.choices[0].message.content;
+    } catch (error) {
+        console.error("Error querying ChatGPT API:", error);
+        return "Sorry, I couldn't process your request.";
+    }
+}
             
             // Mobile menu toggle
             menuToggle.addEventListener('click', function() {
@@ -1866,19 +2612,21 @@ composeToggle.addEventListener('click', function() {
 
             async function sendMessage() {
                 const message = messageInput.value.trim();
-                if (message.length === 0) return;
+                if (message.length === 0 && !uploadedFile) return;
+                
+                // Hide welcome screen
+                welcomeScreen.style.display = 'none';
                 
                 // Check if we need to create a new conversation
                 if (!currentConversationId) {
                     createNewConversation(message);
-                } else {
-                    // Add user message to current conversation and display
+                }
+                
+                // Add user message to current conversation and display
+                if (message.length > 0) {
                     addMessageToCurrentConversation(message, 'user');
                     addMessage(message, 'user');
                 }
-                
-                // Hide welcome screen
-                welcomeScreen.style.display = 'none';
                 
                 // Clear input
                 messageInput.value = '';
@@ -1888,10 +2636,15 @@ composeToggle.addEventListener('click', function() {
                 const typingId = showTypingIndicator();
                 
                 try {
-                    // Call ChatGPT API with the user message
-                    console.log("Sending prompt to ChatGPT:", message);
-                    const response = await callChatGPT(message);
-                    console.log("Received response from ChatGPT:", response);
+                    let response;
+                    
+                    // If there's an uploaded file, process it
+                    if (uploadedFile) {
+                        // Handle image uploads as before...
+                    } else {
+                        // Use the updated API call with conversation history
+                        response = await callChatGPT(currentConversationId);
+                    }
                     
                     // Hide typing indicator
                     hideTypingIndicator(typingId);
@@ -2320,6 +3073,176 @@ function updateConversationHistory() {
             // Initialize a default conversation
             createNewConversation();
         });
+
+        // Add this to your existing script after DOMContentLoaded
+
+// File upload functionality
+const fileUploadBtn = document.getElementById('file-upload-btn');
+const fileInput = document.getElementById('file-input');
+const filePreviewContainer = document.getElementById('file-preview-container');
+let uploadedFile = null;
+
+// Handle file upload button click
+fileUploadBtn.addEventListener('click', function() {
+    fileInput.click();
+});
+
+// Handle file selection
+fileInput.addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+        const file = this.files[0];
+        
+        // Check if file is an image
+        if (!file.type.match('image.*')) {
+            alert('Please select an image file');
+            return;
+        }
+        
+        // Store the file for later use
+        uploadedFile = file;
+        
+        // Create file preview
+        createFilePreview(file);
+    }
+});
+
+// Create file preview element
+function createFilePreview(file) {
+    // Clear previous preview
+    filePreviewContainer.innerHTML = '';
+    
+    // Create preview element
+    const previewEl = document.createElement('div');
+    previewEl.classList.add('file-preview');
+    
+    // Create preview image
+    const img = document.createElement('img');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    
+    // Create file info
+    const fileInfo = document.createElement('div');
+    fileInfo.classList.add('file-info');
+    
+    const fileName = document.createElement('div');
+    fileName.classList.add('file-name');
+    fileName.textContent = file.name;
+    
+    const fileSize = document.createElement('div');
+    fileSize.classList.add('file-size');
+    fileSize.textContent = formatFileSize(file.size);
+    
+    fileInfo.appendChild(fileName);
+    fileInfo.appendChild(fileSize);
+    
+    // Create remove button
+    const removeBtn = document.createElement('button');
+    removeBtn.classList.add('remove-file');
+    removeBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    `;
+    removeBtn.addEventListener('click', function() {
+        filePreviewContainer.innerHTML = '';
+        uploadedFile = null;
+        fileInput.value = '';
+    });
+    
+    // Assemble preview
+    previewEl.appendChild(img);
+    previewEl.appendChild(fileInfo);
+    previewEl.appendChild(removeBtn);
+    filePreviewContainer.appendChild(previewEl);
+}
+
+// Format file size
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+// Modify the sendMessage function to include image analysis
+async function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message.length === 0 && !uploadedFile) return;
+    
+    // Hide welcome screen
+    welcomeScreen.style.display = 'none';
+    
+    // Check if we need to create a new conversation
+    if (!currentConversationId) {
+        createNewConversation(message);
+    }
+    
+    // Add user message to current conversation and display
+    if (message.length > 0) {
+        addMessageToCurrentConversation(message, 'user');
+        addMessage(message, 'user');
+    }
+    
+    // Clear input
+    messageInput.value = '';
+    messageInput.style.height = 'auto';
+    
+    // Show typing indicator
+    const typingId = showTypingIndicator();
+    
+    try {
+        let response;
+        
+        // If there's an uploaded file, process it
+        if (uploadedFile) {
+            // Create a message indicating an image was uploaded
+            const imageUploadMessage = "I've uploaded an image for analysis";
+            if (message.length === 0) {
+                addMessageToCurrentConversation(imageUploadMessage, 'user');
+                addMessage(imageUploadMessage, 'user');
+            }
+            
+            // Read the file as base64
+            const reader = new FileReader();
+            const filePromise = new Promise((resolve) => {
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(uploadedFile);
+            });
+            
+            const base64Image = await filePromise;
+            
+            // Call the API with the image (this would need to be adjusted based on your actual API implementation)
+            // For this example, we'll just use a placeholder response
+            response = "I've received your image and analyzed it. This appears to be [image analysis placeholder]. To provide a more detailed analysis, I would examine the image content and provide insights about what I see.";
+            
+            // Clear the uploaded file
+            uploadedFile = null;
+            filePreviewContainer.innerHTML = '';
+        } else {
+            // Regular text-based query
+            console.log("Sending prompt to ChatGPT:", message);
+            response = await callChatGPT(message);
+            console.log("Received response from ChatGPT:", response);
+        }
+        
+        // Hide typing indicator
+        hideTypingIndicator(typingId);
+        
+        // Display the response
+        addMessage(response, 'bot');
+        addMessageToCurrentConversation(response, 'bot');
+    } catch (error) {
+        console.error("Error processing prompt:", error);
+        hideTypingIndicator(typingId);
+        
+        // Display error message
+        const errorMessage = "Sorry, I couldn't process your request. Please try again later.";
+        addMessage(errorMessage, 'bot');
+        addMessageToCurrentConversation(errorMessage, 'bot');
+    }
+}
     </script>
 </body>
 </html>
